@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rites Studio</title>
+<meta name="description" content="Rites Studio partners with creatives & communities to transform public spaces. Our mindful, human-centric design fosters connection & shared experience for all.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+
+<style>
+/* ─── RESET & ROOT ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --black:   #080807;
+  --off-white: #f0ece4;
+  --warm-grey: #9b9590;
+  --accent:  #b8a98a;
+  --rule:    rgba(240,236,228,0.1);
+  --serif:   'Cormorant Garamond', 'Times New Roman', serif;
+  --mono:    'DM Mono', 'Courier New', monospace;
+  --nav-h:   68px;
+  --pad:     clamp(24px, 4vw, 60px);
+}
+
+body {
+  background: var(--black);
+  color: var(--off-white);
+  font-family: var(--mono);
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+
+/* ─── CURSOR ─────────────────────────────────────────────── */
+#cur {
+  position: fixed;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--off-white);
+  pointer-events: none;
+  z-index: 9000;
+  transform: translate(-50%,-50%);
+  transition: width .25s, height .25s, background .25s;
+  mix-blend-mode: difference;
+}
+#cur.big { width: 36px; height: 36px; }
+
+/* ─── PAGE TRANSITIONS ───────────────────────────────────── */
+#veil {
+  position: fixed; inset: 0;
+  background: var(--black);
+  z-index: 800;
+  transform-origin: bottom;
+  transform: scaleY(0);
+  pointer-events: none;
+}
+#veil.in  { animation: veil-in  .45s cubic-bezier(.77,0,.18,1) forwards; }
+#veil.out { animation: veil-out .4s  cubic-bezier(.77,0,.18,1) .05s forwards; }
+@keyframes veil-in  { to { transform: scaleY(1); transform-origin: bottom; } }
+@keyframes veil-out { from { transform: scaleY(1); transform-origin: top; } to { transform: scaleY(0); transform-origin: top; } }
+
+/* ─── NAV ────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  z-index: 500;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--pad);
+}
+
+.nav-logo img {
+  height: 56px;
+  filter: brightness(0) invert(1);
+  cursor: none;
+}
+
+.nav-links {
+  display: flex; gap: 32px; align-items: center;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--off-white);
+  opacity: .55;
+  transition: opacity .2s;
+  cursor: none;
+}
+.nav-links a:hover,
+.nav-links a.active { opacity: 1; }
+
+/* hamburger */
+.ham { display: none; flex-direction: column; gap: 5px; cursor: none; z-index: 600; }
+.ham span { display: block; width: 22px; height: 1px; background: var(--off-white); transition: transform .3s, opacity .3s; }
+.ham.open span:nth-child(1) { transform: rotate(45deg) translate(4px,4px); }
+.ham.open span:nth-child(2) { opacity: 0; }
+.ham.open span:nth-child(3) { transform: rotate(-45deg) translate(4px,-4px); }
+
+/* mobile menu */
+.mob-menu {
+  display: none; position: fixed; inset: 0;
+  background: var(--black);
+  z-index: 550;
+  flex-direction: column; align-items: center; justify-content: center; gap: 36px;
+  opacity: 0; pointer-events: none; transition: opacity .35s;
+}
+.mob-menu.open { opacity: 1; pointer-events: all; }
+.mob-menu a {
+  font-family: var(--serif);
+  font-size: clamp(40px,10vw,72px);
+  font-weight: 300; font-style: italic;
+  color: var(--off-white); opacity: .8; transition: opacity .2s; cursor: none;
+}
+.mob-menu a:hover { opacity: 1; }
+
+/* ─── PAGES ──────────────────────────────────────────────── */
+.page { display: none; }
+.page.on { display: block; }
+
+/* ─── HOME ───────────────────────────────────────────────── */
+.home-hero {
+  min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: var(--nav-h) var(--pad) clamp(48px,7vh,100px);
+  position: relative; overflow: hidden;
+}
+
+/* subtle grain */
+.home-hero::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+.home-headline {
+  font-family: var(--serif);
+  font-size: clamp(56px,10vw,148px);
+  font-weight: 300; font-style: italic;
+  line-height: .92; letter-spacing: -.015em;
+  color: var(--off-white);
+  opacity: 0; transform: translateY(28px);
+  animation: up 1.1s cubic-bezier(.16,1,.3,1) .25s forwards;
+}
+
+.home-sub {
+  margin-top: 36px;
+  max-width: 420px;
+  font-size: 13px; line-height: 1.8;
+  color: var(--accent);
+  opacity: 0; transform: translateY(18px);
+  animation: up .9s cubic-bezier(.16,1,.3,1) .65s forwards;
+}
+
+@keyframes up { to { opacity:1; transform:none; } }
+
+/* ─── FLOATING SYMBOLS (hero bg) ─────────────────────────── */
+.hero-symbols {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+}
+.hero-sym {
+  position: absolute;
+  font-size: 18px;
+  color: rgba(184,169,138,0.45);
+  animation: floatSym linear infinite;
+  user-select: none;
+}
+@keyframes floatSym {
+  0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: .6; }
+  100% { transform: translateY(-12vh) rotate(360deg); opacity: 0; }
+}
+
+/* project strip on home */
+.home-strip {
+  border-top: 1px solid var(--rule);
+  margin-top: clamp(60px,10vh,120px);
+}
+.strip-label {
+  font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--warm-grey);
+  padding: 20px var(--pad);
+}
+.strip-list { padding: 0 var(--pad); }
+
+.strip-item {
+  border-bottom: 1px solid var(--rule);
+  cursor: none;
+  overflow: hidden;
+}
+.strip-item-row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 20px 0;
+  transition: padding-left .35s cubic-bezier(.16,1,.3,1);
+}
+.strip-item:hover .strip-item-row { padding-left: 12px; }
+.strip-item-l {
+  display: flex; align-items: baseline; gap: 20px;
+}
+.strip-num  { font-size: 9px; letter-spacing: .1em; color: var(--warm-grey); min-width: 22px; }
+.strip-name {
+  font-family: var(--serif);
+  font-size: clamp(26px,3.5vw,48px);
+  font-weight: 300; font-style: italic;
+  color: var(--off-white); transition: color .25s;
+}
+.strip-item:hover .strip-name { color: var(--accent); }
+.strip-arrow { font-size: 11px; color: var(--warm-grey); transition: transform .3s, color .25s; }
+.strip-item:hover .strip-arrow { transform: translateX(6px); color: var(--accent); }
+
+/* expanding preview below each strip row */
+.strip-preview {
+  max-height: 0; overflow: hidden;
+  transition: max-height 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.strip-item:hover .strip-preview { max-height: 480px; }
+.strip-preview img {
+  width: 100%; height: 420px;
+  object-fit: cover; display: block;
+  margin-bottom: 20px;
+  opacity: 0;
+  filter: grayscale(15%);
+  transform: scale(1.02);
+  transition: opacity .6s ease .2s, filter .6s ease, transform .8s cubic-bezier(0.4, 0, 0.2, 1) .1s;
+}
+.strip-item:hover .strip-preview img {
+  opacity: 1; filter: none; transform: scale(1);
+}
+
+/* ─── PROJECTS LIST PAGE ─────────────────────────────────── */
+.plist-head {
+  padding: calc(var(--nav-h) + 60px) var(--pad) 48px;
+}
+.plist-head h1 {
+  font-family: var(--serif);
+  font-size: clamp(48px,8vw,110px);
+  font-weight: 300; font-style: italic;
+  line-height: .9;
+  opacity: 0; animation: up .9s cubic-bezier(.16,1,.3,1) .1s forwards;
+}
+.plist-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 2px;
+}
+.pcard {
+  position: relative; aspect-ratio: 4/3;
+  overflow: hidden; cursor: none; background: #111;
+}
+.pcard img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .8s cubic-bezier(.16,1,.3,1), filter .5s;
+  filter: grayscale(25%) brightness(.7);
+}
+.pcard:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(.8); }
+.pcard-info {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 40px 28px 24px;
+  background: linear-gradient(to top, rgba(8,8,7,.88) 0%, transparent 100%);
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.pcard-name {
+  font-family: var(--serif);
+  font-size: clamp(22px,2.5vw,34px);
+  font-weight: 300; font-style: italic;
+}
+.pcard-tag {
+  font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ─── PROJECT DETAIL ─────────────────────────────────────── */
+.detail-hero {
+  height: clamp(400px,65vh,720px);
+  position: relative; overflow: hidden;
+}
+.detail-hero img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  filter: brightness(.45);
+  transform: scale(1.04);
+  animation: heroScale 8s ease forwards;
+}
+@keyframes heroScale { to { transform: scale(1); } }
+
+.detail-hero-body {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: calc(var(--nav-h) + 20px) var(--pad) 52px;
+}
+.back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 28px; cursor: none;
+  transition: gap .3s;
+}
+.back:hover { gap: 14px; }
+
+/* animated italic title — three repeats, italic second */
+.detail-h1-wrap {
+  overflow: hidden;
+  font-family: var(--serif);
+  font-size: clamp(44px,7.5vw,106px);
+  font-weight: 300; line-height: .92; letter-spacing: -.01em;
+}
+.detail-h1-inner {
+  display: flex; align-items: baseline; flex-wrap: nowrap; gap: .3em;
+  animation: slideUp .9s cubic-bezier(.16,1,.3,1) .15s both;
+}
+@keyframes slideUp { from { transform: translateY(100%); opacity:0; } to { transform:none; opacity:1; } }
+.detail-title-plain  { color: var(--off-white); }
+.detail-title-italic { color: var(--off-white); font-style: italic; }
+.detail-title-sep    { color: var(--accent); font-style: normal; font-size: .6em; }
+
+.detail-tag {
+  margin-top: 18px;
+  font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--accent); opacity: .75;
+}
+
+/* body copy */
+.detail-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  padding: 72px var(--pad);
+}
+.detail-body h2 {
+  font-family: var(--serif);
+  font-size: clamp(22px,2.5vw,34px);
+  font-weight: 400; font-style: italic;
+  color: var(--off-white); margin-bottom: 20px; line-height: 1.25;
+}
+.detail-body p {
+  font-size: 13px; line-height: 1.9;
+  color: rgba(240,236,228,.65);
+  margin-bottom: 16px;
+}
+.detail-body em { font-style: italic; color: var(--off-white); }
+
+/* ─── IMAGE CAROUSEL ─────────────────────────────────────── */
+.carousel {
+  padding: 0 var(--pad) 80px;
+}
+.carousel-main {
+  position: relative; overflow: hidden;
+  background: #0c0c0b;
+  margin-bottom: 6px;
+  cursor: zoom-in;
+}
+.carousel-main img {
+  width: 100%; max-height: 560px;
+  object-fit: scale-down;
+  display: block;
+  transition: opacity .45s ease;
+}
+.carousel-main img.hidden { opacity: 0; position: absolute; top: 0; left: 0; width: 100%; }
+.carousel-main img.visible { opacity: 1; position: relative; }
+
+.carousel-arrows {
+  position: absolute; top: 50%; left: 0; right: 0;
+  display: flex; justify-content: space-between;
+  padding: 0 16px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.carousel-arrow {
+  pointer-events: all;
+  background: rgba(8,8,7,.55); border: 1px solid var(--rule);
+  color: var(--off-white); font-family: var(--mono);
+  font-size: 11px; letter-spacing: .1em;
+  padding: 10px 14px; cursor: none;
+  transition: background .2s, color .2s;
+  user-select: none;
+}
+.carousel-arrow:hover { background: var(--accent); color: var(--black); }
+
+.carousel-counter {
+  position: absolute; bottom: 12px; right: 16px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: .14em;
+  color: var(--warm-grey);
+}
+
+.carousel-thumbs {
+  display: flex; gap: 4px; overflow-x: auto;
+  justify-content: center;
+  scrollbar-width: none;
+}
+.carousel-thumbs::-webkit-scrollbar { display: none; }
+.carousel-thumb {
+  flex: 0 0 100px; height: 64px;
+  object-fit: cover;
+  opacity: .4; cursor: none;
+  transition: opacity .25s;
+  filter: grayscale(20%);
+}
+.carousel-thumb.active { opacity: 1; filter: none; outline: 1px solid var(--accent); }
+.carousel-thumb:hover  { opacity: .75; }
+
+/* lightbox */
+#lightbox {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(8,8,7,.95);
+  align-items: center; justify-content: center;
+  cursor: zoom-out;
+}
+#lightbox.open { display: flex; }
+#lightbox img {
+  max-width: 92vw; max-height: 92vh;
+  object-fit: contain;
+  box-shadow: 0 30px 80px rgba(0,0,0,.6);
+  animation: lbIn .3s cubic-bezier(.16,1,.3,1);
+}
+@keyframes lbIn { from { opacity:0; transform:scale(.94); } to { opacity:1; transform:none; } }
+#lightbox-close {
+  position: absolute; top: 24px; right: 28px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--warm-grey);
+  cursor: pointer; transition: color .2s;
+}
+#lightbox-close:hover { color: var(--off-white); }
+
+/* prev/next */
+.detail-nav {
+  display: flex; justify-content: space-between;
+  border-top: 1px solid var(--rule);
+  padding: 32px var(--pad);
+}
+.detail-nav a {
+  font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--warm-grey); cursor: none; transition: color .2s;
+}
+.detail-nav a:hover { color: var(--off-white); }
+
+/* ─── ABOUT ──────────────────────────────────────────────── */
+.about-hero {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  padding: calc(var(--nav-h) + 80px) var(--pad) 80px;
+}
+.about-hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(52px,8vw,104px);
+  font-weight: 300; font-style: italic; line-height: .9;
+  opacity: 0; animation: up .9s cubic-bezier(.16,1,.3,1) .1s forwards;
+}
+.about-copy {
+  opacity: 0; animation: up .9s cubic-bezier(.16,1,.3,1) .3s forwards;
+}
+.about-copy p {
+  font-size: 13px; line-height: 1.9;
+  color: rgba(240,236,228,.65); margin-bottom: 18px;
+}
+
+/* not/is grid */
+.not-grid {
+  border-top: 1px solid var(--rule);
+  padding: 72px var(--pad);
+}
+.not-label {
+  font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--warm-grey); margin-bottom: 48px;
+}
+.not-row {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 0; border-bottom: 1px solid var(--rule);
+}
+.not-row:first-of-type { border-top: 1px solid var(--rule); }
+.not-cell {
+  padding: 36px 32px;
+  border-right: 1px solid var(--rule);
+  opacity: 0; transform: translateY(14px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.not-cell:last-child { border-right: none; }
+.not-cell.vis { opacity: 1; transform: none; }
+.not-word {
+  font-family: var(--serif);
+  font-size: clamp(20px,2vw,28px);
+  font-style: italic; font-weight: 300;
+  color: var(--warm-grey);
+  text-decoration: line-through;
+  text-decoration-color: rgba(184,169,138,.35);
+}
+.not-sym {
+  font-family: var(--mono);
+  font-size: 11px; color: var(--accent);
+  margin-bottom: 8px; display: block;
+}
+
+/* approach list */
+.approach { padding: 0 var(--pad) 100px; }
+.approach-label {
+  font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--warm-grey); margin-bottom: 40px;
+}
+.approach-item {
+  display: grid; grid-template-columns: 220px 1fr;
+  gap: 40px; padding: 24px 0;
+  border-bottom: 1px solid var(--rule);
+  opacity: 0; transform: translateY(14px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.approach-item:first-of-type { border-top: 1px solid var(--rule); }
+.approach-item.vis { opacity: 1; transform: none; }
+.approach-word {
+  font-family: var(--serif);
+  font-size: 22px; font-style: italic; font-weight: 300;
+  color: var(--accent);
+}
+.approach-desc {
+  font-size: 13px; line-height: 1.85;
+  color: rgba(240,236,228,.6); padding-top: 3px;
+}
+
+/* ─── CONTACT ────────────────────────────────────────────── */
+.contact-ticker-wrap {
+  padding: calc(var(--nav-h) + 72px) 0 0;
+  overflow: hidden; white-space: nowrap;
+}
+.contact-ticker {
+  display: inline-flex; gap: 0;
+  animation: ticker 18s linear infinite;
+}
+.contact-ticker-inner {
+  font-family: var(--serif);
+  font-size: clamp(52px,9vw,128px);
+  font-weight: 300; font-style: italic;
+  color: var(--off-white); padding-right: 60px;
+  white-space: nowrap;
+}
+@keyframes ticker { to { transform: translateX(-50%); } }
+.contact-ticker { animation-duration: 40s; }
+
+.contact-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  padding: 80px var(--pad) 100px;
+  border-top: 1px solid var(--rule);
+  margin-top: 60px;
+}
+.contact-exp h2 {
+  font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--warm-grey); margin-bottom: 36px;
+}
+.exp-list { list-style: none; }
+.exp-list li {
+  font-family: var(--serif);
+  font-size: clamp(20px,2.2vw,30px);
+  font-weight: 300; font-style: italic;
+  padding: 14px 0; border-bottom: 1px solid var(--rule);
+  opacity: 0; transform: translateX(-12px);
+  transition: opacity .45s ease, transform .45s ease, color .25s;
+}
+.exp-list li:first-child { border-top: 1px solid var(--rule); }
+.exp-list li.vis { opacity: 1; transform: none; }
+.exp-list li:hover { color: var(--accent); }
+
+.contact-right { display: flex; flex-direction: column; justify-content: space-between; }
+.contact-right p {
+  font-size: 13px; line-height: 1.9;
+  color: rgba(240,236,228,.6); margin-bottom: 44px;
+}
+.contact-email {
+  font-family: var(--serif);
+  font-size: clamp(24px,3vw,40px);
+  font-style: italic; font-weight: 300;
+  color: var(--off-white);
+  border-bottom: 1px solid rgba(240,236,228,.25); padding-bottom: 8px;
+  display: inline-block; cursor: none;
+  transition: color .25s, border-color .25s;
+}
+.contact-email:hover { color: var(--accent); border-color: var(--accent); }
+/* contact form */
+.contact-form { display: flex; flex-direction: column; gap: 16px; }
+.contact-form input,
+.contact-form textarea,
+.contact-form select {
+  width: 100%; background: transparent;
+  border: none; border-bottom: 1px solid var(--rule);
+  color: var(--off-white);
+  font-family: var(--mono); font-size: 12px; font-weight: 300;
+  padding: 12px 0; outline: none;
+  transition: border-color .25s;
+  -webkit-appearance: none;
+}
+.contact-form input::placeholder,
+.contact-form textarea::placeholder { color: var(--warm-grey); }
+.contact-form input:focus,
+.contact-form textarea:focus { border-color: var(--accent); }
+.contact-form textarea { resize: none; height: 100px; }
+.contact-form-label {
+  font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--warm-grey); margin-bottom: -8px;
+}
+.contact-submit {
+  margin-top: 8px;
+  background: transparent; border: 1px solid rgba(240,236,228,.2);
+  color: var(--off-white); font-family: var(--mono);
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  padding: 14px 28px; cursor: none;
+  transition: background .25s, border-color .25s, color .25s;
+  align-self: flex-start;
+}
+.contact-submit:hover {
+  background: var(--accent); border-color: var(--accent); color: var(--black);
+}
+.form-success {
+  display: none; padding: 20px 0;
+  font-family: var(--serif); font-size: 20px; font-style: italic;
+  color: var(--accent);
+}
+
+/* ─── HOME CTA ───────────────────────────────────────────── */
+.home-cta {
+  padding: clamp(80px,12vh,140px) var(--pad);
+  border-top: 1px solid var(--rule);
+  display: flex; flex-direction: column; gap: 32px;
+}
+.home-cta-label {
+  font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--warm-grey);
+}
+.home-cta-headline {
+  font-family: var(--serif);
+  font-size: clamp(40px,6vw,88px);
+  font-weight: 300; font-style: italic; line-height: 1.0;
+  color: var(--off-white);
+}
+.home-cta-btn {
+  display: inline-block; align-self: flex-start;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--off-white);
+  border-bottom: 1px solid rgba(240,236,228,.3); padding-bottom: 6px;
+  cursor: none;
+  transition: color .25s, border-color .25s, letter-spacing .3s;
+}
+.home-cta-btn:hover { color: var(--accent); border-color: var(--accent); letter-spacing: .22em; }
+
+/* ─── FOOTER ─────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--rule);
+  padding: 28px var(--pad);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.ft-copy {
+  font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--warm-grey);
+}
+.ft-mark {
+  font-family: var(--serif);
+  font-size: 13px; font-style: italic;
+  color: rgba(184,169,138,.35);
+}
+
+/* ─── REVEAL OBSERVER ────────────────────────────────────── */
+.rev { opacity: 0; transform: translateY(20px); transition: opacity .65s ease, transform .65s ease; }
+.rev.vis { opacity: 1; transform: none; }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .ham       { display: flex; }
+  .mob-menu  { display: flex; }
+
+  .home-hero { padding-bottom: 60px; }
+
+  .plist-grid { grid-template-columns: 1fr; }
+
+  .detail-body { grid-template-columns: 1fr; gap: 32px; padding: 48px var(--pad); }
+  .detail-gallery { grid-template-columns: 1fr; }
+
+  .about-hero { grid-template-columns: 1fr; gap: 36px; }
+  .not-row    { grid-template-columns: 1fr; }
+  .not-cell   { border-right: none; border-bottom: 1px solid var(--rule); }
+  .approach-item { grid-template-columns: 1fr; gap: 8px; }
+
+  .contact-body { grid-template-columns: 1fr; gap: 52px; }
+
+  .strip-preview img { height: 280px; }
+  .strip-preview { display: none; }
+
+  footer { flex-direction: column; gap: 10px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="veil"></div>
+
+<!-- ═══ NAV ═══════════════════════════════════════════════ -->
+<nav>
+  <a class="nav-logo" data-page="home" href="#">
+    <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/ab2c8820-82c6-41dd-aa79-b5b5c9c9534c/25_0505-FINAL_LOGO-INVERTED.png?format=750w" alt="Rites Studio">
+  </a>
+  <ul class="nav-links">
+    <li><a data-page="projects" href="#">Projects</a></li>
+    <li><a data-page="about"    href="#">About</a></li>
+    <li><a data-page="contact"  href="#">Contact</a></li>
+    <li><a href="https://www.instagram.com/rites.studio/" target="_blank" rel="noopener">↗ Instagram</a></li>
+  </ul>
+  <div class="ham" id="ham"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mob-menu" id="mob">
+  <a data-page="projects" href="#">Projects</a>
+  <a data-page="about"    href="#">About</a>
+  <a data-page="contact"  href="#">Contact</a>
+  <a href="https://www.instagram.com/rites.studio/" target="_blank" rel="noopener">Instagram ↗</a>
+</div>
+
+<!-- ═══ HOME ═══════════════════════════════════════════════ -->
+<div class="page on" id="p-home">
+
+  <section class="home-hero">
+    <div class="hero-symbols" id="hero-symbols"></div>
+    <h1 class="home-headline">find some<br>humanity</h1>
+    <p class="home-sub">We're a design studio dedicated to creating spaces that work with human nature—not against it. Our projects are intimate and small but leave you with a feeling of something greater. We make places of pause, not of passing fascination. Places of gravity that bring together humanity.</p>
+  </section>
+
+  <section class="home-strip">
+    <p class="strip-label">— selected work</p>
+    <div class="strip-list">
+
+      <div class="strip-item rev" data-page="detail" data-proj="connection">
+        <div class="strip-item-row">
+          <div class="strip-item-l">
+            <span class="strip-num">01</span>
+            <span class="strip-name">connection</span>
+          </div>
+          <span class="strip-arrow">→</span>
+        </div>
+        <div class="strip-preview">
+          <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7c7b42b2-c92c-48a2-9c16-3d2c869f4620/WIDE+ANGLE.png" alt="connection" loading="lazy">
+        </div>
+      </div>
+
+      <div class="strip-item rev" data-page="detail" data-proj="tribute">
+        <div class="strip-item-row">
+          <div class="strip-item-l">
+            <span class="strip-num">02</span>
+            <span class="strip-name">tribute</span>
+          </div>
+          <span class="strip-arrow">→</span>
+        </div>
+        <div class="strip-preview">
+          <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/1dcfd8af-0486-4ca6-a5ef-e0cddf4b4816/Interior+-+Final.png" alt="tribute" loading="lazy">
+        </div>
+      </div>
+
+      <div class="strip-item rev" data-page="detail" data-proj="belief">
+        <div class="strip-item-row">
+          <div class="strip-item-l">
+            <span class="strip-num">03</span>
+            <span class="strip-name">belief</span>
+          </div>
+          <span class="strip-arrow">→</span>
+        </div>
+        <div class="strip-preview">
+          <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/ce572343-c761-46f8-8897-abb19246f948/BRIDGE+-+DUSK+2.png" alt="belief" loading="lazy">
+        </div>
+      </div>
+
+      <div class="strip-item rev" data-page="detail" data-proj="awe">
+        <div class="strip-item-row">
+          <div class="strip-item-l">
+            <span class="strip-num">04</span>
+            <span class="strip-name">awe</span>
+          </div>
+          <span class="strip-arrow">→</span>
+        </div>
+        <div class="strip-preview">
+          <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/90b6725c-2d60-4d7d-9d68-aaf46c06bbc0/03.5.jpg" alt="awe" loading="lazy">
+        </div>
+      </div>
+
+      <div class="strip-item rev" data-page="detail" data-proj="comfort">
+        <div class="strip-item-row">
+          <div class="strip-item-l">
+            <span class="strip-num">05</span>
+            <span class="strip-name">comfort</span>
+          </div>
+          <span class="strip-arrow">→</span>
+        </div>
+        <div class="strip-preview">
+          <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/35f1c92a-a74c-4896-95a0-7d25b7aef6c0/Front+Render+%282018_11_28+04_13_52+UTC%29.jpg" alt="comfort" loading="lazy">
+        </div>
+      </div>
+
+      <div class="strip-item rev" data-page="detail" data-proj="unity">
+        <div class="strip-item-row">
+          <div class="strip-item-l">
+            <span class="strip-num">06</span>
+            <span class="strip-name">unity</span>
+          </div>
+          <span class="strip-arrow">→</span>
+        </div>
+        <div class="strip-preview">
+          <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7382fe63-bce0-4279-85e2-64f9644a2b00/IMG_3425_bright.jpg" alt="unity" loading="lazy">
+        </div>
+      </div>
+
+    <!--%%STRIP-ITEM-INSERT%%-->
+    </div>
+  </section>
+
+  <section class="home-cta">
+    <p class="home-cta-label">— work with us</p>
+    <h2 class="home-cta-headline">Got a space you want<br>to transform?</h2>
+    <a class="home-cta-btn" data-page="contact" href="#">Start a conversation →</a>
+  </section>
+
+  <footer>
+    <span class="ft-copy">© 2025 Rites Studio</span>
+    <span class="ft-mark">find some humanity</span>
+  </footer>
+</div>
+
+<!-- ═══ PROJECTS PAGE ══════════════════════════════════════ -->
+<div class="page" id="p-projects">
+  <div class="plist-head"><h1>work</h1></div>
+
+  <div class="plist-grid">
+    <div class="pcard" data-page="detail" data-proj="connection">
+      <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7c7b42b2-c92c-48a2-9c16-3d2c869f4620/WIDE+ANGLE.png" alt="connection" loading="lazy">
+      <div class="pcard-info">
+        <span class="pcard-name">connection</span>
+        <span class="pcard-tag">transit installation</span>
+      </div>
+    </div>
+
+    <div class="pcard" data-page="detail" data-proj="tribute">
+      <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/1dcfd8af-0486-4ca6-a5ef-e0cddf4b4816/Interior+-+Final.png" alt="tribute" loading="lazy">
+      <div class="pcard-info">
+        <span class="pcard-name">tribute</span>
+        <span class="pcard-tag">memorial installation</span>
+      </div>
+    </div>
+
+    <div class="pcard" data-page="detail" data-proj="belief">
+      <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/ce572343-c761-46f8-8897-abb19246f948/BRIDGE+-+DUSK+2.png" alt="belief" loading="lazy">
+      <div class="pcard-info">
+        <span class="pcard-name">belief</span>
+        <span class="pcard-tag">canal installation</span>
+      </div>
+    </div>
+
+    <div class="pcard" data-page="detail" data-proj="awe">
+      <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/90b6725c-2d60-4d7d-9d68-aaf46c06bbc0/03.5.jpg" alt="awe" loading="lazy">
+      <div class="pcard-info">
+        <span class="pcard-name">awe</span>
+        <span class="pcard-tag">public theater</span>
+      </div>
+    </div>
+
+    <div class="pcard" data-page="detail" data-proj="comfort">
+      <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/35f1c92a-a74c-4896-95a0-7d25b7aef6c0/Front+Render+%282018_11_28+04_13_52+UTC%29.jpg" alt="comfort" loading="lazy">
+      <div class="pcard-info">
+        <span class="pcard-name">comfort</span>
+        <span class="pcard-tag">pop-up pavilion</span>
+      </div>
+    </div>
+
+    <div class="pcard" data-page="detail" data-proj="unity">
+      <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7382fe63-bce0-4279-85e2-64f9644a2b00/IMG_3425_bright.jpg" alt="unity" loading="lazy">
+      <div class="pcard-info">
+        <span class="pcard-name">unity</span>
+        <span class="pcard-tag">community pavilion</span>
+      </div>
+    </div>
+    <!--%%PCARD-INSERT%%-->
+  </div>
+
+  <footer>
+    <span class="ft-copy">© 2025 Rites Studio</span>
+    <span class="ft-mark">find some humanity</span>
+  </footer>
+</div>
+
+<!-- ═══ PROJECT DETAIL (rendered by JS) ═══════════════════ -->
+<div class="page" id="p-detail"></div>
+
+<!-- ═══ ABOUT ═════════════════════════════════════════════ -->
+<div class="page" id="p-about">
+
+  <div class="about-hero">
+    <h1>mission</h1>
+    <div class="about-copy">
+      <p>Despite unprecedented levels of global interconnectedness, humanity has never been lonelier. We seem to have lost sight of what brings us joy and fulfillment. So caught up in presenting a perfect image, we often forget the purpose of our gatherings—the rites of human existence.</p>
+      <p>The ceremonies, rituals and spaces we invite others into have become commonplace and uninspired. We can change that together.</p>
+      <p>We transform spaces into sites for reflection, profound emotion, and shared human experience. Our work is intimate and small but leaves you with a feeling of something greater. We make places of pause, not of passing fascination. Places of gravity that bring together humanity.</p>
+      <p>Our process is rooted in fluid collaboration, adaptability, and experimentation, ensuring that every Rites Studio installation is a unique and responsive creation, born of its place. We are driven by a mission of mindfulness—to create work that enhances, not detracts from the community it's in.</p>
+    </div>
+  </div>
+
+  <div class="approach">
+    <p class="approach-label">— our approach</p>
+
+    <div class="approach-item">
+      <span class="approach-word">mindfulness</span>
+      <span class="approach-desc">We are driven by a mission of mindfulness—to create work that enhances, not detracts from the community it's in. We accomplish these goals by being inclusive, creative and unyielding in our mission.</span>
+    </div>
+    <div class="approach-item">
+      <span class="approach-word">collaboration</span>
+      <span class="approach-desc">Our process is rooted in fluid collaboration and adaptability. We work with communities, creatives and clients to shape spaces that respond to the real needs of the place and the people in it.</span>
+    </div>
+    <div class="approach-item">
+      <span class="approach-word">experimentation</span>
+      <span class="approach-desc">Every Rites Studio installation is a unique and responsive creation, born of its place—never a template, always an experiment. We embrace failure as part of the process.</span>
+    </div>
+    <div class="approach-item">
+      <span class="approach-word">inclusivity</span>
+      <span class="approach-desc">Great public space belongs to everyone. We design for the full range of human experience, not for an ideal user. Our installations invite participation from anyone who encounters them.</span>
+    </div>
+  </div>
+
+  <footer>
+    <span class="ft-copy">© 2025 Rites Studio</span>
+    <span class="ft-mark">find some humanity</span>
+  </footer>
+</div>
+
+<!-- ═══ CONTACT ════════════════════════════════════════════ -->
+<div class="page" id="p-contact">
+
+  <div class="contact-ticker-wrap">
+    <div class="contact-ticker">
+      <span class="contact-ticker-inner">remix your reality &nbsp;~&nbsp; remix your reality &nbsp;~&nbsp; remix your reality &nbsp;~&nbsp;</span>
+      <span class="contact-ticker-inner">remix your reality &nbsp;~&nbsp; remix your reality &nbsp;~&nbsp; remix your reality &nbsp;~&nbsp;</span>
+    </div>
+  </div>
+
+  <div class="contact-body">
+    <div class="contact-exp">
+      <h2>areas of expertise</h2>
+      <ul class="exp-list">
+        <li>Architecture</li>
+        <li>Design Consulting</li>
+        <li>Art Installations</li>
+        <li>Immersive Experiences</li>
+        <li>Temporary Structures</li>
+        <li>Event Curation</li>
+        <li>Pop-Ups</li>
+      </ul>
+    </div>
+
+    <div class="contact-right">
+      <p>We partner with creatives, communities, and institutions to transform public spaces. If you want to work with us on a project, we'd love to hear from you.</p>
+
+      <!-- Formspree: sign up free at formspree.io and replace YOUR_FORM_ID below -->
+      <form class="contact-form" id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <span class="contact-form-label">name</span>
+        <input type="text" name="name" placeholder="Your name" required>
+        <span class="contact-form-label">email</span>
+        <input type="email" name="email" placeholder="your@email.com" required>
+        <span class="contact-form-label">message</span>
+        <textarea name="message" placeholder="Tell us about your project..." required></textarea>
+        <button type="submit" class="contact-submit">Send message</button>
+      </form>
+      <div class="form-success" id="form-success">Thank you — we'll be in touch.</div>
+
+      <a class="contact-ig" href="https://www.instagram.com/rites.studio/" target="_blank" rel="noopener" style="margin-top:32px; display:block; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--warm-grey); transition:color .2s;">↗ Follow on Instagram</a>
+    </div>
+  </div>
+
+  <footer>
+    <span class="ft-copy">© 2025 Rites Studio</span>
+    <span class="ft-mark">find some humanity</span>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ═══ LIGHTBOX ══════════════════════════════════════════ -->
+<div id="lightbox">
+  <span id="lightbox-close">✕ close</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+// ─── PROJECT DATA ───────────────────────────────────────
+const PROJECTS = {
+  connection: {
+    title:  'MIRROR — MIRROR',
+    tag:    'transit installation · public art',
+    hero:   'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7c7b42b2-c92c-48a2-9c16-3d2c869f4620/WIDE+ANGLE.png',
+    h2:     'a station to connect communities and individuals',
+    body1:  `<p>The time we spend waiting for things in public is, more often than not, wasted time. We might treat these rare moments of boredom with apathy, or worse—disdain. We wait with other humans surrounding us, but we turn inwards, to our phones, our thoughts, our worries.</p>
+             <p>If the places we spent time waiting around provided more opportunity to look out of ourselves, maybe we could reconnect with our community or our fellow humans.</p>`,
+    body2:  `<p>This bus rapid transit station is located in a prominent commercial corridor which connects unique neighborhoods, old and new. The residents are as unique as the neighborhoods they live in. This station gives the residents, who will soon rely on this transit line, a chance to connect with each other using a simple tool—the mirror.</p>
+             <p>The quote embedded in the polished steel panel comes from Italo Calvino's <em>Invisible Cities</em>. Its purpose is to draw the attention of the riders to the surface overhead. In reading the quote, provided in English and Spanish, the riders might catch a glance of their fellow rider as they too read the quote above. Maybe even giving them something to have a conversation about as they wait.</p>
+             <p>Soft lighting and penetrations in the structure provide safety and visibility of users. The composite concrete surfaces are easily cleanable and the reinforced traffic barrier protects those on the platform from oncoming traffic.</p>`,
+    images: [
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/b63ec225-674c-47e0-873d-09831edb65de/Artboard+1.jpg', cls: 'full' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/729145b6-28f2-472f-aebe-852a5e2c552f/APPROACH.png', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/f890c019-f23d-44e8-9e10-9e8dc373cafb/Street+View+-+DAY.png', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/0e83651d-7160-4d49-b2da-a5fc37f225e7/Street+View+-+NIGHT.png', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/cee81d61-ee85-4441-9f61-c263831b3bda/From+Sidewalk.png', cls: 'half' },
+    ],
+    prev: null, next: 'tribute'
+  },
+  tribute: {
+    title:  'ANTEPAVILION',
+    tag:    'pop-up installation · memorial',
+    hero:   'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/1dcfd8af-0486-4ca6-a5ef-e0cddf4b4816/Interior+-+Final.png',
+    h2:     'a ritual for cleansing and remembrance',
+    body1:  `<p>A pop-up installation to memorialize a war against art at the Hoxton Docks in London. Designed to fly under the radar of planning authorities by blending with the industrial site, visitors will find an intimate reflection pool to enjoy a space that was meant for their eyes only.</p>
+             <p>Once the visitor has got their bearings, this work invites them to take part in a ritual to help cleanse the site of its bad spirits—using salt from the basin. The visitor may take a handful and toss it across the water, watching the white particles swirl and dissolve into the black pool.</p>`,
+    body2:  `<p>This act helps purify the site and pay respect to the art that came before. The participation of each visitor enhances the work's final form. Looking over the black pool, you can watch the reflections of sunlight creating patterns on the shimmering, black chip board walls in peace and solitude.</p>
+             <p>The project can also be deconstructed in phases. Even if the walls are eventually removed, the shallow pool of stones can be left to dry up. The salt thrown by past visitors will crystalize in the sun as it dries over the rocks, creating a glistening garden before final removal.</p>`,
+    images: [
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/68d82cb9-5f21-4456-94e7-753c638fcec2/Portrait+View.jpg', cls: 'full' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/1928fccf-a5b5-4087-acd2-4307614c4334/Bridge+Perspective-desaturated.png', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/b5839260-972f-4a1e-a346-085be0a8df0b/outlined+approach.png', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/1dcfd8af-0486-4ca6-a5ef-e0cddf4b4816/Interior+-+Final.png', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/2e2e5def-d204-4f9a-bae5-69342348a45e/concept+diagrams.png', cls: 'half' },
+    ],
+    prev: 'connection', next: 'belief'
+  },
+  belief: {
+    title:  'CROSSING OVER',
+    tag:    'canal installation · light art',
+    hero:   'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/ce572343-c761-46f8-8897-abb19246f948/BRIDGE+-+DUSK+2.png',
+    h2:     'a place of reflection',
+    body1:  `<p>Where do we go when we die? Above? Below? Maybe we just vanish. This installation visualizes that transition with a series of glowing paths, like spirits behind a veil, as they make their way back and forth across the canal.</p>
+             <p>Visitors who approach this installation will find it takes on different forms from different angles. The three fabric sails transform in the breeze, adding layers of opacity or transparency depending on the viewer's position.</p>`,
+    body2:  `<p>Due to the varying angles of the sails, the different lengths and the multiple points of intersection, an observer will find the piece comes alive in different ways each time they visit.</p>
+             <p>The points of light have different paces which make them sometimes converge, like two souls finding one another after wandering alone, or part as they pass by. The hope is that, beyond the calming effect the lighting creates, this work will be a place of reflection for someone to contemplate love, loss and even their own mortality.</p>`,
+    images: [
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/53d51907-9b04-4ee4-8001-bb852cff3ed7/CANAL+VIEW.png', cls: 'full' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/6698bba1-815e-41b7-b2d0-2ed2ae53bbe6/PEDESTRIAN.png', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/fe057d8e-b337-4ea7-adb5-6800b5673d9a/AXON_crop.jpg', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/aa2f5b0f-5e7b-4f29-9aa6-f6a4a2c78df0/BRIDGE+-+DAY.jpg', cls: 'full' },
+    ],
+    prev: 'tribute', next: 'awe'
+  },
+  awe: {
+    title:  'PUBLIC THEATER',
+    tag:    'architecture · interior · public space',
+    hero:   'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/90b6725c-2d60-4d7d-9d68-aaf46c06bbc0/03.5.jpg',
+    h2:     'a performance by and for the public',
+    body1:  `<p>When we go to a theater or a gallery, we are going to see but also be seen. The show begins well before the doors open. The procession of the audience as they snake their way through the spaces leading to the theater is, in itself, a performance. A coordinated act by hundreds of strangers which is rarely given space to be appreciated.</p>`,
+    body2:  `<p>Our goal was to take this grand rectilinear lobby and atrium and transform it through the movement of the people attending a show. Through the addition of a deceivingly simple circular stair to connect all the upper levels leading to the performance level, we transformed this white box into a living, breathing organism.</p>
+             <p>Arriving at the top level, there was a large multi story space for sculptures to be installed. To recenter their focus on the ground plane, we proposed an intervention to reground the audience. By flooding the floor with a thin layer of water and placing the sculptures within the pool, attendees' attention will be directed down and allow them to become more connected to the art instead of simply occupying space with it.</p>
+             <p>Despite the requirement for a landing, this stair appears continuous. Like a stream pulling the crowd through the building. Sculptures by Jaume Plensa.</p>`,
+    images: [
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/310aecdb-2681-40cc-8726-356dbb86523c/Looking+Down.jpg', cls: 'full' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/9904bd37-8230-4988-b1a6-ee957cb910a6/looking+up.png', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/fd85b919-688d-40ad-9cfc-366705beca48/Circular+Stair+Diagram.png', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/8a711a43-d9f3-4844-b5b0-4196fc0ef92f/03.5.jpg', cls: 'full' },
+    ],
+    prev: 'belief', next: 'comfort'
+  },
+  comfort: {
+    title:  'THE HOT SEAT',
+    tag:    'pop-up structure · temporary pavilion',
+    hero:   'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/35f1c92a-a74c-4896-95a0-7d25b7aef6c0/Front+Render+%282018_11_28+04_13_52+UTC%29.jpg',
+    h2:     'a pop-up community center',
+    body1:  `<p>Every year the Pittsburgh Polar Bear Club jumps into the frigid waters of the Monongahela River. It's been described as quick and exhilarating, something "The Hot Seat" was inspired by. Sponsored by Epic Metals, this design marries the precise, thin, and reflective nature of metal decking with the stark, raw quality of steel members to create a structure that celebrates the vibrancy of metal.</p>`,
+    body2:  `<p>The interior changing rooms contrast the cold exterior with the warmth of cork lined floors, canvas partitions, and seats heated by coals which sit in a bed made from metal decking. The entire structure is designed for extremely fast assembly and disassembly, using self-locking hinge joints.</p>
+             <p>Within the structure you can experience a blend of elements that are not only useful but comfortable as well. The exterior caters to swimmer and spectator alike, providing seating which is heated by the thermal bridge from the interior and also faces south, towards the sun. Finally, you can enjoy a hot beverage at the built-in bar and continue on your way.</p>`,
+    images: [
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/83518f17-ca80-4425-8931-243a8654330b/elevations+and+plan.jpg', cls: 'full' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7f1ea3ac-8be7-40ea-8e92-1da7df78d8fd/construction.jpg', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/4607b3d3-5dd9-454e-9169-49faf0b056a9/diagrams.jpg', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/35f1c92a-a74c-4896-95a0-7d25b7aef6c0/Front+Render+%282018_11_28+04_13_52+UTC%29.jpg', cls: 'full' },
+    ],
+    prev: 'awe', next: 'unity'
+  },
+  unity: {
+    title:  'PLASTIC PAVILION',
+    tag:    'community experiment · sustainability',
+    hero:   'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7382fe63-bce0-4279-85e2-64f9644a2b00/IMG_3425_bright.jpg',
+    h2:     'Can a community be brought together by their trash?',
+    body1:  `<p>Every day, trash bins are filled with plastic cups embossed with recycling symbols. But if you follow the journey of that cup, does it actually get recycled? Most often, the answer is no. It lives its many hundreds of years of life sitting in a landfill or polluting our water.</p>
+             <p>So, we were curious—could we take hundreds of discarded plastic cups and turn them into a shelter? A core goal of this experiment was to create a replicable process with somewhat of a recipe book for anyone to experiment with, as well.</p>`,
+    body2:  `<p>Despite the utilitarian design, the repurposed material that came out of the process also proved to have an inherent beauty. We wanted to show the public that regardless of their local authorities' indifference toward recycling, they have the power to change their impact from negative to positive.</p>
+             <p>We wanted to take off the shelf tools—a paper shredder, a heat press, silicone baking sheets, zipties, and a few hundred plastic cups—and make something with longevity from all these disposable products. If we could create this pavilion over a couple months, imagine what an entire community could do with their collective trash and their imagination.</p>
+             <p>In collaboration with Cy Kim.</p>`,
+    images: [
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/8cce9282-d335-4a87-8b9a-09f4ccccfc23/IMG_3424+%282018_11_28+04_13_52+UTC%29.jpg', cls: 'full' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/4e942a5a-9239-4ad0-b72f-ac073ec5e72f/IMG_3413+%281%29+%282018_11_28+04_13_52+UTC%29.JPG', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7382fe63-bce0-4279-85e2-64f9644a2b00/IMG_3425_bright.jpg', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/52334a37-d93a-4a0c-af8e-13cb80089662/IMG_3422+%282018_11_28+04_13_52+UTC%29.JPG', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7549fb6d-f40b-461a-b4e5-0933950e9a2d/IMG_3426+%282018_11_28+04_13_52+UTC%29.JPG', cls: 'half' },
+      { src: 'https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/991761e4-f6b8-47f3-82a4-306d06dd058a/07.jpg', cls: 'full' },
+    ],
+    prev: 'comfort', next: null
+  },
+//%%PROJECT-INSERT%%
+};
+
+// ─── STATE ──────────────────────────────────────────────
+let cur = 'home';
+
+// ─── CURSOR ─────────────────────────────────────────────
+const curEl = document.getElementById('cur');
+document.addEventListener('mousemove', e => {
+  curEl.style.left = e.clientX + 'px';
+  curEl.style.top  = e.clientY + 'px';
+});
+function bindCursorGrow(root) {
+  root = root || document;
+  root.querySelectorAll('a, [data-page], [data-proj], button, .ham').forEach(el => {
+    el.addEventListener('mouseenter', () => curEl.classList.add('big'));
+    el.addEventListener('mouseleave', () => curEl.classList.remove('big'));
+  });
+}
+bindCursorGrow();
+
+// ─── RENDER PROJECT DETAIL ──────────────────────────────
+function renderDetail(key) {
+  const p = PROJECTS[key];
+  if (!p) return;
+
+  const carouselImgs = p.images.map((i, idx) =>
+    `<img src="${i.src}" alt="${p.title}" loading="lazy" class="${idx === 0 ? 'visible' : 'hidden'}" data-idx="${idx}">`
+  ).join('');
+
+  const carouselThumbs = p.images.map((i, idx) =>
+    `<img src="${i.src}" class="carousel-thumb${idx === 0 ? ' active' : ''}" data-idx="${idx}" alt="" loading="lazy">`
+  ).join('');
+
+  const prevBtn = p.prev
+    ? `<a data-page="detail" data-proj="${p.prev}" href="#">← ${p.prev}</a>`
+    : `<span></span>`;
+  const nextBtn = p.next
+    ? `<a data-page="detail" data-proj="${p.next}" href="#">${p.next} →</a>`
+    : `<span></span>`;
+
+  document.getElementById('p-detail').innerHTML = `
+    <div class="detail-hero">
+      <img src="${p.hero}" alt="${p.title}">
+      <div class="detail-hero-body">
+        <a class="back" data-page="projects" href="#">← all work</a>
+        <div class="detail-h1-wrap">
+          <div class="detail-h1-inner">
+            <span class="detail-title-italic">${p.title}</span>
+          </div>
+        </div>
+        <p class="detail-tag">${p.tag}</p>
+      </div>
+    </div>
+
+    <div class="detail-body">
+      <div>
+        <h2>${p.h2}</h2>
+        ${p.body1}
+      </div>
+      <div>${p.body2}</div>
+    </div>
+
+    <div class="carousel" id="carousel">
+      <div class="carousel-main" id="carousel-main">
+        ${carouselImgs}
+        <div class="carousel-arrows">
+          <button class="carousel-arrow" id="car-prev">←</button>
+          <button class="carousel-arrow" id="car-next">→</button>
+        </div>
+        <span class="carousel-counter" id="car-counter">1 / ${p.images.length}</span>
+      </div>
+      <div class="carousel-thumbs" id="carousel-thumbs">
+        ${carouselThumbs}
+      </div>
+    </div>
+
+    <div class="detail-nav">
+      ${prevBtn}
+      ${nextBtn}
+    </div>
+
+    <footer>
+      <span class="ft-copy">© 2025 Rites Studio</span>
+      <span class="ft-mark">find some humanity</span>
+    </footer>
+  `;
+
+  // carousel logic
+  let carIdx = 0;
+  let carTimer;
+  const carImgs   = document.querySelectorAll('#carousel-main img[data-idx]');
+  const carThumbs = document.querySelectorAll('#carousel-thumbs .carousel-thumb');
+  const carCounter = document.getElementById('car-counter');
+  const total = carImgs.length;
+
+  function carGo(idx) {
+    carImgs[carIdx].className   = 'hidden';
+    carThumbs[carIdx].classList.remove('active');
+    carIdx = (idx + total) % total;
+    carImgs[carIdx].className   = 'visible';
+    carThumbs[carIdx].classList.add('active');
+    carCounter.textContent = `${carIdx + 1} / ${total}`;
+    // scroll thumb into view
+    carThumbs[carIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    resetTimer();
+  }
+
+  function resetTimer() {
+    clearInterval(carTimer);
+    carTimer = setInterval(() => carGo(carIdx + 1), 4000);
+  }
+
+  document.getElementById('car-prev').addEventListener('click', e => { e.stopPropagation(); carGo(carIdx - 1); });
+  document.getElementById('car-next').addEventListener('click', e => { e.stopPropagation(); carGo(carIdx + 1); });
+  carThumbs.forEach(t => t.addEventListener('click', () => carGo(+t.dataset.idx)));
+
+  // lightbox on main image click
+  document.getElementById('carousel-main').addEventListener('click', () => {
+    const src = carImgs[carIdx].src;
+    openLightbox(src);
+  });
+
+  resetTimer();
+
+  // wire cursor grow on new elements
+  bindCursorGrow(document.getElementById('p-detail'));
+}
+
+// ─── NAVIGATION ─────────────────────────────────────────
+const veil = document.getElementById('veil');
+
+function goTo(pageId, proj) {
+  const key = proj ? `detail-${proj}` : pageId;
+  if (key === cur) return;
+
+  veil.className = 'in';
+
+  setTimeout(() => {
+    // hide all
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+
+    if (pageId === 'detail' && proj) {
+      renderDetail(proj);
+      document.getElementById('p-detail').classList.add('on');
+      cur = `detail-${proj}`;
+    } else {
+      const el = document.getElementById(`p-${pageId}`);
+      if (el) { el.classList.add('on'); cur = pageId; }
+    }
+
+    // nav active state
+    document.querySelectorAll('.nav-links a[data-page]').forEach(a => {
+      const match = pageId === 'detail' ? a.dataset.page === 'projects' : a.dataset.page === pageId;
+      a.classList.toggle('active', match);
+    });
+
+    window.scrollTo(0, 0);
+    veil.className = 'out';
+
+    setTimeout(() => {
+      veil.className = '';
+      initObserver();
+    }, 450);
+
+  }, 420);
+}
+
+// ─── CLICK DELEGATION ───────────────────────────────────
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-page]');
+  if (!el) return;
+  e.preventDefault();
+  const page = el.dataset.page;
+  const proj = el.dataset.proj;
+  if (mobOpen) toggleMob();
+  goTo(page, proj);
+});
+
+// ─── HAMBURGER ──────────────────────────────────────────
+let mobOpen = false;
+const hamEl  = document.getElementById('ham');
+const mobEl  = document.getElementById('mob');
+
+function toggleMob() {
+  mobOpen = !mobOpen;
+  hamEl.classList.toggle('open', mobOpen);
+  mobEl.classList.toggle('open', mobOpen);
+  document.body.style.overflow = mobOpen ? 'hidden' : '';
+}
+hamEl.addEventListener('click', toggleMob);
+
+// ─── FLOATING SYMBOLS ───────────────────────────────────
+(function() {
+  const syms = ['✦','○','△','◇','✕','—','∞','◯','✧','⊹','×','◻'];
+  const container = document.getElementById('hero-symbols');
+  if (!container) return;
+  for (let i = 0; i < 18; i++) {
+    const el = document.createElement('span');
+    el.className = 'hero-sym';
+    el.textContent = syms[Math.floor(Math.random() * syms.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.fontSize = (16 + Math.random() * 20) + 'px';
+    const dur = 18 + Math.random() * 22;
+    const delay = -(Math.random() * dur);
+    el.style.animation = `floatSym ${dur}s ${delay}s linear infinite`;
+    container.appendChild(el);
+  }
+})();
+
+// ─── CONTACT FORM ────────────────────────────────────────
+const contactForm = document.getElementById('contact-form');
+if (contactForm) {
+  contactForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('.contact-submit');
+    btn.textContent = 'Sending…';
+    try {
+      const res = await fetch(this.action, {
+        method: 'POST',
+        body: new FormData(this),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        contactForm.style.display = 'none';
+        document.getElementById('form-success').style.display = 'block';
+      } else {
+        btn.textContent = 'Error — try again';
+      }
+    } catch(err) {
+      btn.textContent = 'Error — try again';
+    }
+  });
+}
+
+// ─── LIGHTBOX ───────────────────────────────────────────
+const lb    = document.getElementById('lightbox');
+const lbImg = document.getElementById('lightbox-img');
+
+function openLightbox(src) {
+  lbImg.src = src;
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  lb.classList.remove('open');
+  lbImg.src = '';
+  document.body.style.overflow = '';
+}
+
+lb.addEventListener('click', closeLightbox);
+document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// ─── SCROLL REVEAL OBSERVER ─────────────────────────────
+function initObserver() {
+  const targets = document.querySelectorAll(
+    '.rev, .not-cell, .approach-item, .exp-list li'
+  );
+  if (!targets.length) return;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((en, i) => {
+      if (en.isIntersecting) {
+        setTimeout(() => en.target.classList.add('vis'), i * 70);
+        obs.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+  targets.forEach(t => obs.observe(t));
+}
+
+initObserver();
+</script>
+</body>
+</html>
