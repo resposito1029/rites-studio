@@ -25,6 +25,7 @@ a{text-decoration:none;color:inherit;}
 /* CURSOR */
 #cur{position:fixed;width:7px;height:7px;border-radius:50%;background:var(--off-white);pointer-events:none;z-index:9000;transform:translate(-50%,-50%);transition:width .25s,height .25s;mix-blend-mode:difference;}
 #cur.big{width:36px;height:36px;}
+@media(pointer:coarse){#cur{display:none;}body{cursor:auto;}}
 
 /* VEIL */
 #veil{position:fixed;inset:0;background:var(--black);z-index:800;transform-origin:bottom;transform:scaleY(0);pointer-events:none;}
@@ -467,7 +468,12 @@ function renderDetail(key) {
     carImgs[carIdx].className = 'visible';
     carThumbs[carIdx].classList.add('active');
     carCounter.textContent = `${carIdx+1} / ${total}`;
-    carThumbs[carIdx].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    // scroll thumb within its container only, never hijack page scroll
+    const thumbsEl = document.getElementById('carousel-thumbs');
+    const activeThumb = carThumbs[carIdx];
+    if (thumbsEl && activeThumb) {
+      thumbsEl.scrollLeft = activeThumb.offsetLeft - (thumbsEl.offsetWidth / 2) + (activeThumb.offsetWidth / 2);
+    }
     resetTimer();
   }
   function resetTimer() { clearInterval(carTimer); carTimer = setInterval(() => carGo(carIdx+1), 4000); }
