@@ -1,20 +1,24 @@
 [
   {
-    "key": "connection",
-    "theme": "connection",
-    "title": "MIRROR â MIRROR",
-    "tag": "transit installation Â· public art",
-    "cardTag": "transit installation",
-    "hero": "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7c7b42b2-c92c-48a2-9c16-3d2c869f4620/WIDE+ANGLE.png",
-    "h2": "a station to connect communities and individuals",
-    "body1": "The time we spend waiting for things in public is, more often than not, wasted time. We might treat these rare moments of boredom with apathy, or worseâdisdain. We wait with other humans surrounding us, but we turn inwards, to our phones, our thoughts, our worries.\n\nIf the places we spent time waiting around provided more opportunity to look out of ourselves, maybe we could reconnect with our community or our fellow humans.",
-    "body2": "This bus rapid transit station is located in a prominent commercial corridor which connects unique neighborhoods, old and new. The residents are as unique as the neighborhoods they live in. This station gives the residents, who will soon rely on this transit line, a chance to connect with each other using a simple toolâthe mirror.\n\nThe quote embedded in the polished steel panel comes from Italo Calvino's Invisible Cities. Its purpose is to draw the attention of the riders to the surface overhead. In reading the quote, provided in English and Spanish, the riders might catch a glance of their fellow rider as they too read the quote above.\n\nSoft lighting and penetrations in the structure provide safety and visibility of users. The composite concrete surfaces are easily cleanable and the reinforced traffic barrier protects those on the platform from oncoming traffic.",
+    "key": "antepavilion2026",
+    "theme": "rebellion",
+    "title": "HOLY CRAP",
+    "tag": "temporary community center",
+    "cardTag": "temporary community center",
+    "hero": "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/side-elevation.png",
+    "h2": "a chapel of scrap",
+    "body1": "Reclamation is not only a physical act but also a conceptual one. This work is a statement of reclaiming peace and solitude without the subservience to any higher power, whether it be a God or a city council. Instead of a holy torture in the apse, this chapel is orientated toward a crucified martyr of Antepavilion - a shark. Inspired by medieval construction methods, this structure is frozen in its scaffolding stage. The scaffolding itself is the ornamentation.\n\nBenches of reclaimed red louro and brick line the edge of the barge's hull so people can recant their woes in peace. The exterior appears somewhat chaotic due to the crisscrossing structural ties and supports but the interior is more understated. Those arriving with frustration and anger can decompress in the Chapel of Scrap.",
+    "body2": "This project turns the material usage on its head. The Red Louro, once finishing material, becomes a structural element by binding layers of the strips together to reinforce each other. The tetrapak sheets, typically a cheap solution for cladding auxiliary structures, is used as the interior finish of this skeletal cathedral. The reclaimed brick is used to anchor the structure for stability. Red brick for the columns and blue brick for the seating elements. \n\nThe vaults of this chapel do not convene in a typical vault construction. Instead, angular cuts of the corrugated tetrapak sheets reveal a fluid pattern in the negative space between the panels.",
     "images": [
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/b63ec225-674c-47e0-873d-09831edb65de/Artboard+1.jpg",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/729145b6-28f2-472f-aebe-852a5e2c552f/APPROACH.png",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/f890c019-f23d-44e8-9e10-9e8dc373cafb/Street+View+-+DAY.png",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/0e83651d-7160-4d49-b2da-a5fc37f225e7/Street+View+-+NIGHT.png",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/cee81d61-ee85-4441-9f61-c263831b3bda/From+Sidewalk.png"
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/side-elevation.png",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/corruguted-panel-ties-v1.png",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/trail-side.png",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/looking-up.png",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/material-section.png",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/structure-ties.png",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/vertical.png",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/plan.png",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/sistered-beams-v1.png"
     ],
     "featured": true
   },
@@ -54,6 +58,25 @@
       "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/aa2f5b0f-5e7b-4f29-9aa6-f6a4a2c78df0/BRIDGE+-+DAY.jpg"
     ],
     "featured": true
+  },
+  {
+    "key": "connection",
+    "theme": "connection",
+    "title": "MIRROR â MIRROR",
+    "tag": "transit installation Â· public art",
+    "cardTag": "transit installation",
+    "hero": "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7c7b42b2-c92c-48a2-9c16-3d2c869f4620/WIDE+ANGLE.png",
+    "h2": "a station to connect communities and individuals",
+    "body1": "The time we spend waiting for things in public is, more often than not, wasted time. We might treat these rare moments of boredom with apathy, or worseâdisdain. We wait with other humans surrounding us, but we turn inwards, to our phones, our thoughts, our worries.\n\nIf the places we spent time waiting around provided more opportunity to look out of ourselves, maybe we could reconnect with our community or our fellow humans.",
+    "body2": "This bus rapid transit station is located in a prominent commercial corridor which connects unique neighborhoods, old and new. The residents are as unique as the neighborhoods they live in. This station gives the residents, who will soon rely on this transit line, a chance to connect with each other using a simple toolâthe mirror.\n\nThe quote embedded in the polished steel panel comes from Italo Calvino's Invisible Cities. Its purpose is to draw the attention of the riders to the surface overhead. In reading the quote, provided in English and Spanish, the riders might catch a glance of their fellow rider as they too read the quote above.\n\nSoft lighting and penetrations in the structure provide safety and visibility of users. The composite concrete surfaces are easily cleanable and the reinforced traffic barrier protects those on the platform from oncoming traffic.",
+    "images": [
+      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/b63ec225-674c-47e0-873d-09831edb65de/Artboard+1.jpg",
+      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/729145b6-28f2-472f-aebe-852a5e2c552f/APPROACH.png",
+      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/f890c019-f23d-44e8-9e10-9e8dc373cafb/Street+View+-+DAY.png",
+      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/0e83651d-7160-4d49-b2da-a5fc37f225e7/Street+View+-+NIGHT.png",
+      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/cee81d61-ee85-4441-9f61-c263831b3bda/From+Sidewalk.png"
+    ],
+    "featured": false
   },
   {
     "key": "awe",
@@ -108,29 +131,6 @@
       "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/52334a37-d93a-4a0c-af8e-13cb80089662/IMG_3422+%282018_11_28+04_13_52+UTC%29.JPG",
       "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7549fb6d-f40b-461a-b4e5-0933950e9a2d/IMG_3426+%282018_11_28+04_13_52+UTC%29.JPG",
       "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/991761e4-f6b8-42a4-306d06dd058a/07.jpg"
-    ],
-    "featured": false
-  },
-  {
-    "key": "antepavilion2026",
-    "theme": "rebellion",
-    "title": "HOLY CRAP",
-    "tag": "temporary community center",
-    "cardTag": "temporary community center",
-    "hero": "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/side-elevation.png",
-    "h2": "a chapel of scrap",
-    "body1": "Reclamation is not only a physical act but also a conceptual one. This work is a statement of reclaiming peace and solitude without the subservience to any higher power, whether it be a God or a city council. Instead of a holy torture in the apse, this chapel is orientated toward a crucified martyr of Antepavilion - a shark. Inspired by medieval construction methods, this structure is frozen in its scaffolding stage. The scaffolding itself is the ornamentation.\n\nBenches of reclaimed red louro and brick line the edge of the barge's hull so people can recant their woes in peace. The exterior appears somewhat chaotic due to the crisscrossing structural ties and supports but the interior is more understated. Those arriving with frustration and anger can decompress in the Chapel of Scrap.",
-    "body2": "This project turns the material usage on its head. The Red Louro, once finishing material, becomes a structural element by binding layers of the strips together to reinforce each other. The tetrapak sheets, typically a cheap solution for cladding auxiliary structures, is used as the interior finish of this skeletal cathedral. The reclaimed brick is used to anchor the structure for stability. Red brick for the columns and blue brick for the seating elements. \n\nThe vaults of this chapel do not convene in a typical vault construction. Instead, angular cuts of the corrugated tetrapak sheets reveal a fluid pattern in the negative space between the panels.",
-    "images": [
-      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/side-elevation.png",
-      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/corruguted-panel-ties-v1.png",
-      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/trail-side.png",
-      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/looking-up.png",
-      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/material-section.png",
-      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/structure-ties.png",
-      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/vertical.png",
-      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/plan.png",
-      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/antepavilion2026/sistered-beams-v1.png"
     ],
     "featured": false
   }
