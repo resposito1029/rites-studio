@@ -336,7 +336,7 @@ function loadSettings() {
 // ─── IMAGE HANDLING ───────────────────────────────────────
 const fileQueue = []; // { file, objectUrl, ghUrl, status }
 
-document.getElementById('file-input').addEventListener('change', e => addFiles(e.target.files));
+document.getElementById('file-input').addEventListener('change', e => { addFiles(e.target.files); e.target.value = ''; });
 
 const dz = document.getElementById('drop-zone');
 dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('drag'); });
@@ -398,18 +398,23 @@ async function uploadImage(item, idx, slug) {
   updateImgStatus(idx, item.status);
 
   const s = getSettings();
-  const ext  = item.file.name.split('.').pop().toLowerCase();
   const safe = item.file.name.replace(/[^a-z0-9._-]/gi, '-').toLowerCase();
   const path = `images/${slug}/${safe}`;
 
-  // read as base64
   const b64 = await fileToBase64(item.file);
 
-  const res = await ghRequest('PUT', path, {
-    message: `Add image: ${safe}`,
-    content: b64,
-    branch: s.branch || 'main'
-  });
+  // fetch existing SHA so we can overwrite without a 422
+  let sha;
+  const existing = await ghRequest('GET', path);
+  if (existing.ok) {
+    const data = await existing.json();
+    sha = data.sha;
+  }
+
+  const body = { message: `Add image: ${safe}`, content: b64, branch: s.branch || 'main' };
+  if (sha) body.sha = sha;
+
+  const res = await ghRequest('PUT', path, body);
 
   if (res.ok) {
     item.status = 'done';
@@ -482,6 +487,19 @@ async function publishProject() {
     return setPublishStatus('err', 'Add at least one image');
   }
 
+  // guard: fetch index.html early to check for duplicate keys
+  setPublishStatus('info', '↓ Checking for conflicts…');
+  let html, sha;
+  try {
+    const result = await getIndexHtml();
+    html = result.content; sha = result.sha;
+  } catch(e) {
+    return setPublishStatus('err', `Could not read index.html: ${e.message}`);
+  }
+  if (html.includes(`  ${key}: {`)) {
+    return setPublishStatus('err', `Project key "${key}" already exists — choose a different key`);
+  }
+
   setPublishStatus('info', '↑ Uploading images…');
 
   // 1. Upload all pending images
@@ -498,8 +516,7 @@ async function publishProject() {
 
   setPublishStatus('info', '↓ Fetching current site…');
 
-  // 2. Fetch index.html
-  let html, sha;
+  // 2. Re-fetch index.html to get latest SHA after image uploads
   try {
     const result = await getIndexHtml();
     html = result.content; sha = result.sha;
