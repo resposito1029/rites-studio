@@ -524,6 +524,19 @@ async function publishProject() {
     return setPublishStatus('err', `Could not read index.html: ${e.message}`);
   }
 
+  // debug: check markers
+  const hasProjectMarker  = html.includes('//%%PROJECT-INSERT%%');
+  const hasStripMarker    = html.includes('<!--%%STRIP-ITEM-INSERT%%-->');
+  const hasPcardMarker    = html.includes('<!--%%PCARD-INSERT%%-->');
+
+  if (!hasProjectMarker || !hasStripMarker || !hasPcardMarker) {
+    return setPublishStatus('err',
+      `Missing markers in index.html on GitHub. ` +
+      `PROJECT: ${hasProjectMarker}, STRIP: ${hasStripMarker}, PCARD: ${hasPcardMarker}. ` +
+      `Re-upload the latest index.html to your repo and try again.`
+    );
+  }
+
   // 3. Build image array
   const imgArr = fileQueue.map(f =>
     `      { src: '${f.ghUrl}', cls: 'half' }`
@@ -596,8 +609,9 @@ ${imgArr}
   // 8. Push updated index.html
   const pushRes = await putIndexHtml(html, sha, `Add project: ${theme}`);
   if (!pushRes.ok) {
-    const err = await pushRes.json();
-    return setPublishStatus('err', `Failed to publish: ${err.message}`);
+    let errMsg = `HTTP ${pushRes.status}`;
+    try { const e = await pushRes.json(); errMsg += `: ${e.message}`; } catch {}
+    return setPublishStatus('err', `Failed to publish: ${errMsg}`);
   }
 
   setPublishStatus('ok', `✓ "${theme}" is live! GitHub Pages usually updates within 30–60 seconds.`);
