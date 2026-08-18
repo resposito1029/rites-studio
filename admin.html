@@ -386,7 +386,7 @@ async function uploadImageFile(file, slug) {
 
   const r = await ghPut(path, b64, sha, `Add image: ${safe}`);
   if (!r.ok) throw new Error(`Upload failed: ${r.status}`);
-  return `https://cdn.jsdelivr.net/gh/${s.user}/${s.repo}@${s.branch||'main'}/${path}`;
+  return `https://cdn.statically.io/gh/${s.user}/${s.repo}/${s.branch||'main'}/${path}`;
 }
 
 function fileToB64(file) {
