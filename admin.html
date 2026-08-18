@@ -374,34 +374,92 @@ async function putFile(path, content, sha, message) {
   return r;
 }
 
-// Compress image to max 2000px / 82% JPEG if it's over 800KB or larger than 2000px.
-// PNG files are also converted to JPEG unless they're small diagrams (<200KB).
+// Read EXIF orientation tag from a JPEG file (returns 1–8; 1 = no rotation).
+async function readExifOrientation(file) {
+  try {
+    const buf = await file.slice(0, 65536).arrayBuffer();
+    const v = new DataView(buf);
+    if (v.getUint16(0) !== 0xFFD8) return 1;
+    let off = 2;
+    while (off + 4 < v.byteLength) {
+      if (v.getUint8(off) !== 0xFF) break;
+      const marker = v.getUint8(off + 1);
+      if (marker === 0xDA) break; // SOS — end of headers
+      const segLen = v.getUint16(off + 2);
+      if (marker === 0xE1 && off + 10 < v.byteLength) { // APP1
+        if (v.getUint32(off + 4) === 0x45786966 && v.getUint16(off + 8) === 0) { // "Exif\0\0"
+          const tiff = off + 10;
+          const le = v.getUint16(tiff) === 0x4949;
+          const u16 = o => v.getUint16(tiff + o, le);
+          const u32 = o => v.getUint32(tiff + o, le);
+          const ifd = u32(4);
+          const n = u16(ifd);
+          for (let i = 0; i < n; i++) {
+            const e = ifd + 2 + i * 12;
+            if (e + 12 > v.byteLength - tiff) break;
+            if (u16(e) === 0x0112) return u16(e + 8); // Orientation tag
+          }
+        }
+      }
+      off += 2 + segLen;
+    }
+  } catch {}
+  return 1;
+}
+
+// Compress image to max 2000px / 82% JPEG, with explicit EXIF orientation baked in.
 async function compressImage(file) {
   const MAX_PX = 2000;
   const QUALITY = 0.82;
-  const SKIP_THRESHOLD = 800 * 1024; // skip if already <800KB
+  const SIZE_THRESHOLD = 800 * 1024;
 
-  // Small files — no need to touch
-  if (file.size < SKIP_THRESHOLD) return { file, compressed: false };
+  const isJpeg = file.type === 'image/jpeg' || /\.jpe?g$/i.test(file.name);
+  const orientation = isJpeg ? await readExifOrientation(file) : 1;
+  const needsRotation = orientation > 1;
+  const tooBig = file.size >= SIZE_THRESHOLD;
 
-  return new Promise((resolve, reject) => {
+  if (!needsRotation && !tooBig) return { file, compressed: false };
+
+  return new Promise(resolve => {
     const img = new Image();
+    // Disable CSS auto-rotation so naturalWidth/naturalHeight are raw file dimensions
+    // and drawImage draws raw pixels — we apply the correct transform ourselves.
+    img.style.imageOrientation = 'none';
     const url = URL.createObjectURL(file);
     img.onload = () => {
       URL.revokeObjectURL(url);
-      const scale = Math.min(1, MAX_PX / Math.max(img.naturalWidth, img.naturalHeight));
-      const w = Math.round(img.naturalWidth * scale);
-      const h = Math.round(img.naturalHeight * scale);
+      const nw = img.naturalWidth, nh = img.naturalHeight;
+      // Orientations 5–8 swap width and height in the display
+      const swap = orientation >= 5;
+      const dw = swap ? nh : nw;
+      const dh = swap ? nw : nh;
+      const scale = Math.min(1, MAX_PX / Math.max(dw, dh));
+      const cw = Math.round(dw * scale);
+      const ch = Math.round(dh * scale);
 
       const canvas = document.createElement('canvas');
-      canvas.width = w;
-      canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.width = cw;
+      canvas.height = ch;
+      const ctx = canvas.getContext('2d');
+
+      // Apply orientation as a canvas transform before drawing.
+      // Each case maps draw-space (0→nw*s, 0→nh*s) into canvas-space (0→cw, 0→ch).
+      switch (orientation) {
+        case 2: ctx.transform(-1, 0,  0,  1, cw,  0);  break; // mirror H
+        case 3: ctx.transform(-1, 0,  0, -1, cw, ch);  break; // 180°
+        case 4: ctx.transform( 1, 0,  0, -1,  0, ch);  break; // mirror V
+        case 5: ctx.transform( 0, 1,  1,  0,  0,  0);  break; // transpose
+        case 6: ctx.transform( 0, 1, -1,  0, cw,  0);  break; // 90° CW
+        case 7: ctx.transform( 0,-1, -1,  0, cw, ch);  break; // anti-transpose
+        case 8: ctx.transform( 0,-1,  1,  0,  0, ch);  break; // 270° CW
+      }
+      ctx.drawImage(img, 0, 0, nw * scale, nh * scale);
 
       canvas.toBlob(blob => {
         if (!blob) { resolve({ file, compressed: false }); return; }
-        // Only use compressed version if it's actually smaller
-        if (blob.size >= file.size) { resolve({ file, compressed: false }); return; }
+        // For pure rotation (no compression needed): accept even if slightly larger.
+        // For compression: only accept if actually smaller.
+        if (!needsRotation && blob.size >= file.size) { resolve({ file, compressed: false }); return; }
         const name = file.name.replace(/\.[^.]+$/, '.jpg');
         resolve({ file: new File([blob], name, { type: 'image/jpeg' }), compressed: true, origSize: file.size, newSize: blob.size });
       }, 'image/jpeg', QUALITY);
