@@ -374,19 +374,65 @@ async function putFile(path, content, sha, message) {
   return r;
 }
 
-async function uploadImageFile(file, slug) {
-  const safe = file.name.replace(/[^a-z0-9._-]/gi,'-').toLowerCase();
+// Compress image to max 2000px / 82% JPEG if it's over 800KB or larger than 2000px.
+// PNG files are also converted to JPEG unless they're small diagrams (<200KB).
+async function compressImage(file) {
+  const MAX_PX = 2000;
+  const QUALITY = 0.82;
+  const SKIP_THRESHOLD = 800 * 1024; // skip if already <800KB
+
+  // Small files — no need to touch
+  if (file.size < SKIP_THRESHOLD) return { file, compressed: false };
+
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, MAX_PX / Math.max(img.naturalWidth, img.naturalHeight));
+      const w = Math.round(img.naturalWidth * scale);
+      const h = Math.round(img.naturalHeight * scale);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+      canvas.toBlob(blob => {
+        if (!blob) { resolve({ file, compressed: false }); return; }
+        // Only use compressed version if it's actually smaller
+        if (blob.size >= file.size) { resolve({ file, compressed: false }); return; }
+        const name = file.name.replace(/\.[^.]+$/, '.jpg');
+        resolve({ file: new File([blob], name, { type: 'image/jpeg' }), compressed: true, origSize: file.size, newSize: blob.size });
+      }, 'image/jpeg', QUALITY);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve({ file, compressed: false }); };
+    img.src = url;
+  });
+}
+
+async function uploadImageFile(file, slug, onStatus) {
+  // Compress before upload
+  if (onStatus) onStatus('compressing');
+  const { file: toUpload, compressed, origSize, newSize } = await compressImage(file);
+  if (compressed) {
+    const saved = ((origSize - newSize) / 1024 / 1024).toFixed(1);
+    console.log(`Compressed ${file.name}: ${(origSize/1024/1024).toFixed(1)}MB → ${(newSize/1024/1024).toFixed(1)}MB (saved ${saved}MB)`);
+  }
+
+  const safe = toUpload.name.replace(/[^a-z0-9._-]/gi,'-').toLowerCase();
   const path = `images/${slug}/${safe}`;
-  const b64 = await fileToB64(file);
+  const b64 = await fileToB64(toUpload);
   const s = getS();
 
   // check if exists for sha
   let sha = null;
   try { const ex = await getFile(path); sha = ex.sha; } catch {}
 
+  if (onStatus) onStatus('uploading');
   const r = await ghPut(path, b64, sha, `Add image: ${safe}`);
   if (!r.ok) throw new Error(`Upload failed: ${r.status}`);
-  return `https://cdn.statically.io/gh/${s.user}/${s.repo}/${s.branch||'main'}/${path}`;
+  return `https://raw.githubusercontent.com/${s.user}/${s.repo}/${s.branch||'main'}/${path}`;
 }
 
 function fileToB64(file) {
@@ -586,7 +632,7 @@ function renderEditImgQueue() {
     <div class="new-img-row">
       <img src="${item.objectUrl}" alt="">
       <span class="new-img-name">${item.file.name}</span>
-      <span class="new-img-status ${item.status}">${item.status==='pending'?'○ pending':item.status==='uploading'?'↑ uploading…':item.status==='done'?'✓ uploaded':'✕ error'}</span>
+      <span class="new-img-status ${item.status}">${item.status==='pending'?'○ pending':item.status==='compressing'?'⟳ compressing…':item.status==='uploading'?'↑ uploading…':item.status==='done'?'✓ uploaded':'✕ error'}</span>
     </div>
   `).join('');
 }
@@ -601,7 +647,7 @@ async function saveProject() {
     if (item.status==='done') continue;
     item.status='uploading'; renderEditImgQueue();
     try {
-      item.ghUrl = await uploadImageFile(item.file, p.key);
+      item.ghUrl = await uploadImageFile(item.file, p.key, s => { item.status=s; renderEditImgQueue(); });
       item.status='done';
     } catch(e) {
       item.status='error'; renderEditImgQueue();
@@ -669,7 +715,7 @@ function renderNewImgQueue() {
     <div class="new-img-row">
       <img src="${item.objectUrl}" alt="">
       <span class="new-img-name">${item.file.name}</span>
-      <span class="new-img-status ${item.status}">${item.status==='pending'?'○ pending':item.status==='uploading'?'↑ uploading…':item.status==='done'?'✓ uploaded':'✕ error'}</span>
+      <span class="new-img-status ${item.status}">${item.status==='pending'?'○ pending':item.status==='compressing'?'⟳ compressing…':item.status==='uploading'?'↑ uploading…':item.status==='done'?'✓ uploaded':'✕ error'}</span>
     </div>
   `).join('');
 }
@@ -686,7 +732,7 @@ async function publishNewProject() {
     const item = newImgQueue[i];
     item.status='uploading'; renderNewImgQueue();
     try {
-      item.ghUrl = await uploadImageFile(item.file, key);
+      item.ghUrl = await uploadImageFile(item.file, key, s => { item.status=s; renderNewImgQueue(); });
       item.status='done';
     } catch(e) {
       item.status='error'; renderNewImgQueue();
