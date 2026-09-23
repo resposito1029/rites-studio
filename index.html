@@ -37,7 +37,12 @@ a{text-decoration:none;color:inherit;}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);}
-.nav-logo img{height:56px;filter:brightness(0) invert(1);cursor:none;}
+.nav-logo{opacity:0;pointer-events:none;transition:opacity .35s ease;}
+nav.scrolled .nav-logo{opacity:1;pointer-events:auto;}
+.nav-logo img{height:56px;filter:brightness(0) invert(1);cursor:none;transition:filter .35s ease;}
+body.on-detail nav.scrolled .nav-logo img{filter:brightness(0);}
+body.on-detail nav.scrolled .nav-links a{color:var(--black);}
+body.on-detail nav.scrolled .ham span{background:var(--black);}
 .nav-links{display:flex;gap:32px;align-items:center;list-style:none;}
 .nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--off-white);opacity:.55;transition:opacity .2s;cursor:none;}
 .nav-links a:hover,.nav-links a.active{opacity:1;}
@@ -55,7 +60,7 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:500;display:
 .page{display:none;}.page.on{display:block;}
 
 /* HOME HERO */
-.home-hero{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:var(--nav-h) var(--pad) clamp(48px,7vh,100px);position:relative;overflow:hidden;background-image:url("images/hero/rites-studio-hero-night.jpg");background-size:cover;background-position:center 40%;}
+.home-hero{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:var(--nav-h) var(--pad) clamp(48px,7vh,100px);position:relative;overflow:hidden;background-image:url("images/_hero/rites-studio-hero-night.jpg");background-size:cover;background-position:center 40%;}
 .home-hero::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");background-size:200px;z-index:1;}
 .home-hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:
     linear-gradient(to bottom, rgba(10,10,9,.62) 0%, rgba(10,10,9,.18) 32%, rgba(10,10,9,.28) 68%, rgba(10,10,9,.75) 100%);}
@@ -66,18 +71,21 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:500;display:
 @keyframes up{to{opacity:1;transform:none;}}
 
 /* HOME WORK GRID (dynamic image tiles, no text overlay) */
+/* Column-span-only mosaic: every row-group of tiles sums to exactly 6
+   columns, and grid-auto-flow stays at its default (row, not dense), so
+   the browser can never strand an unfillable gap in the middle of the
+   grid — the only possible short row is the very last one, at the end. */
 .home-grid-section{border-top:1px solid var(--rule);margin-top:0;}
 .hg-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--warm-grey);padding:28px var(--pad) 20px;}
-.home-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:190px;grid-auto-flow:dense;gap:4px;padding:0 var(--pad) var(--pad);}
-.hg-tile{position:relative;overflow:hidden;cursor:none;background:#111;display:block;}
+.home-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:220px;gap:4px;padding:0 var(--pad) var(--pad);}
+.hg-tile{position:relative;overflow:hidden;cursor:none;background:#111;display:block;width:100%;height:100%;border:0;margin:0;padding:0;font:inherit;text-align:left;}
 .hg-tile img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(20%) brightness(.82);transition:transform .8s cubic-bezier(.16,1,.3,1),filter .5s;}
 .hg-tile:hover img{transform:scale(1.05);filter:grayscale(0%) brightness(1);}
-.home-grid .hg-tile:nth-child(6n+1){grid-column:span 3;grid-row:span 2;}
-.home-grid .hg-tile:nth-child(6n+2){grid-column:span 3;grid-row:span 1;}
-.home-grid .hg-tile:nth-child(6n+3){grid-column:span 3;grid-row:span 1;}
-.home-grid .hg-tile:nth-child(6n+4){grid-column:span 2;grid-row:span 1;}
-.home-grid .hg-tile:nth-child(6n+5){grid-column:span 2;grid-row:span 1;}
-.home-grid .hg-tile:nth-child(6n+6){grid-column:span 2;grid-row:span 2;}
+.hg-tile.hg-c2{grid-column:span 2;}
+.hg-tile.hg-c3{grid-column:span 3;}
+.hg-tile.hg-c4{grid-column:span 4;}
+.hg-tile.hg-c6{grid-column:span 6;}
+.detail-gallery{padding-bottom:80px;}
 
 /* PROJECTS GRID */
 .plist-head{padding:calc(var(--nav-h) + 60px) var(--pad) 48px;}
@@ -107,21 +115,18 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:500;display:
 .detail-body p{font-size:13px;line-height:1.9;color:rgba(240,236,228,.65);margin-bottom:16px;}
 .detail-body em{font-style:italic;color:var(--off-white);}
 
-/* CAROUSEL */
-.carousel{padding:0 var(--pad) 80px;}
-.carousel-main{position:relative;overflow:hidden;background:#0c0c0b;margin-bottom:6px;cursor:zoom-in;}
-.carousel-main img{width:100%;max-height:560px;object-fit:scale-down;display:block;transition:opacity .45s ease;}
-.carousel-main img.hidden{opacity:0;position:absolute;top:0;left:0;width:100%;}
-.carousel-main img.visible{opacity:1;position:relative;}
-.carousel-arrows{position:absolute;top:50%;left:0;right:0;display:flex;justify-content:space-between;padding:0 16px;transform:translateY(-50%);pointer-events:none;}
-.carousel-arrow{pointer-events:all;background:rgba(8,8,7,.55);border:1px solid var(--rule);color:var(--off-white);font-family:var(--mono);font-size:11px;letter-spacing:.1em;padding:10px 14px;cursor:none;transition:background .2s,color .2s;user-select:none;}
-.carousel-arrow:hover{background:var(--accent);color:var(--black);}
-.carousel-counter{position:absolute;bottom:12px;right:16px;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--warm-grey);}
-.carousel-thumbs{display:flex;gap:4px;overflow-x:auto;justify-content:center;scrollbar-width:none;}
-.carousel-thumbs::-webkit-scrollbar{display:none;}
-.carousel-thumb{flex:0 0 100px;height:64px;object-fit:cover;opacity:.4;cursor:none;transition:opacity .25s;filter:grayscale(20%);}
-.carousel-thumb.active{opacity:1;filter:none;outline:1px solid var(--accent);}
-.carousel-thumb:hover{opacity:.75;}
+/* PROJECT PAGE — LIGHT THEME */
+#p-detail{background:var(--off-white);}
+#p-detail .detail-body h2{color:var(--black);}
+#p-detail .detail-body p{color:rgba(10,10,9,.62);}
+#p-detail .detail-body em{color:var(--black);}
+#p-detail .hg-tile{background:#e5e2d9;}
+#p-detail .detail-nav{border-top:1px solid rgba(10,10,9,.12);}
+#p-detail .detail-nav a{color:rgba(10,10,9,.55);}
+#p-detail .detail-nav a:hover{color:var(--black);}
+#p-detail footer{border-top:1px solid rgba(10,10,9,.12);}
+#p-detail .ft-copy{color:rgba(10,10,9,.5);}
+#p-detail .ft-mark{color:rgba(10,10,9,.3);}
 
 /* LIGHTBOX */
 #lightbox{display:none;position:fixed;inset:0;z-index:2000;background:rgba(8,8,7,.95);align-items:center;justify-content:center;cursor:zoom-out;}
@@ -130,6 +135,11 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:500;display:
 @keyframes lbIn{from{opacity:0;transform:scale(.94);}to{opacity:1;transform:none;}}
 #lightbox-close{position:absolute;top:24px;right:28px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--warm-grey);cursor:pointer;transition:color .2s;}
 #lightbox-close:hover{color:var(--off-white);}
+.lightbox-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(8,8,7,.55);border:1px solid var(--rule);color:var(--off-white);font-family:var(--mono);font-size:14px;padding:14px 16px;cursor:pointer;transition:background .2s,color .2s;user-select:none;z-index:1;}
+.lightbox-arrow:hover{background:var(--accent);color:var(--black);}
+#lightbox-prev{left:20px;}
+#lightbox-next{right:20px;}
+.lightbox-counter{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--warm-grey);}
 
 /* PREV/NEXT NAV */
 .detail-nav{display:flex;justify-content:space-between;border-top:1px solid var(--rule);padding:32px var(--pad);}
@@ -146,13 +156,12 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:500;display:
 .about-byline span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-grey);}
 .approach{padding:0 var(--pad) 100px;}
 .approach-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--warm-grey);margin-bottom:40px;}
-.approach-item{display:grid;grid-template-columns:220px 1fr;gap:40px;padding:24px 0;border-bottom:1px solid var(--rule);opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease;}
+.approach-item{padding:26px 0;border-bottom:1px solid var(--rule);opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease;}
 .approach-item:first-of-type{border-top:1px solid var(--rule);}
 .approach-item.vis{opacity:1;transform:none;}
 .approach-word-wrap{display:flex;align-items:baseline;gap:14px;}
 .approach-num{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--accent);}
-.approach-word{font-family:var(--serif);font-size:22px;font-style:italic;font-weight:400;color:var(--accent);text-transform:capitalize;}
-.approach-desc{font-size:13px;line-height:1.85;color:rgba(240,236,228,.6);padding-top:3px;}
+.approach-word{font-family:var(--serif);font-size:clamp(24px,3vw,32px);font-style:italic;font-weight:400;color:var(--accent);text-transform:capitalize;}
 
 /* CONTACT */
 .contact-ticker-wrap{padding:calc(var(--nav-h) + 72px) 0 0;overflow:hidden;white-space:nowrap;}
@@ -160,9 +169,10 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:500;display:
 .contact-ticker-inner{font-family:var(--serif);font-size:clamp(52px,9vw,128px);font-weight:300;font-style:italic;color:var(--off-white);padding-right:60px;white-space:nowrap;}
 @keyframes ticker{to{transform:translateX(-50%);}}
 .contact-body{display:grid;grid-template-columns:1fr 1fr;gap:60px;padding:80px var(--pad) 100px;border-top:1px solid var(--rule);margin-top:60px;}
+.contact-portrait{width:100%;max-width:280px;aspect-ratio:4/5;object-fit:cover;filter:grayscale(15%);margin-bottom:36px;}
 .contact-exp h2{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--warm-grey);margin-bottom:36px;}
-.exp-list{list-style:none;display:flex;flex-wrap:wrap;gap:12px 16px;}
-.exp-list li{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--off-white);opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease,color .25s;}
+.exp-list{list-style:none;display:flex;flex-wrap:wrap;gap:16px 22px;}
+.exp-list li{font-family:var(--mono);font-size:16px;letter-spacing:.03em;text-transform:uppercase;color:var(--off-white);opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease,color .25s;}
 .exp-list li.vis{opacity:.8;transform:none;}
 .exp-list li:hover{opacity:1;color:var(--accent);}
 .contact-right{display:flex;flex-direction:column;justify-content:space-between;}
@@ -206,8 +216,8 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
   .plist-grid{grid-template-columns:1fr;}
   .detail-body{grid-template-columns:1fr;gap:32px;padding:48px var(--pad);}
   .about-hero{grid-template-columns:1fr;gap:36px;}
-  .approach-item{grid-template-columns:1fr;gap:8px;}
   .contact-body{grid-template-columns:1fr;gap:52px;}
+  .contact-portrait{max-width:200px;}
   footer{flex-direction:column;gap:10px;text-align:center;}
 }
 </style>
@@ -293,10 +303,10 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
   </div>
   <div class="approach">
     <p class="approach-label">— our approach</p>
-    <div class="approach-item"><span class="approach-word-wrap"><span class="approach-num">01</span><span class="approach-word">mindfulness</span></span><span class="approach-desc">Every project has to earn its place — work that adds to the community around it instead of quietly taking something away.</span></div>
-    <div class="approach-item"><span class="approach-word-wrap"><span class="approach-num">02</span><span class="approach-word">collaboration</span></span><span class="approach-desc">Plans shift once people, weather, and material get involved — we stay loose enough to let the process reshape the outcome.</span></div>
-    <div class="approach-item"><span class="approach-word-wrap"><span class="approach-num">03</span><span class="approach-word">experimentation</span></span><span class="approach-desc">No two sites carry the same history, so no two structures should either — each one built in response to where it stands.</span></div>
-    <div class="approach-item"><span class="approach-word-wrap"><span class="approach-num">04</span><span class="approach-word">inclusivity</span></span><span class="approach-desc">A space isn't finished until it holds room for everyone who might stand in it — not just the people it was built to impress.</span></div>
+    <div class="approach-item"><span class="approach-word-wrap"><span class="approach-num">01</span><span class="approach-word">mindfulness</span></span></div>
+    <div class="approach-item"><span class="approach-word-wrap"><span class="approach-num">02</span><span class="approach-word">collaboration</span></span></div>
+    <div class="approach-item"><span class="approach-word-wrap"><span class="approach-num">03</span><span class="approach-word">experimentation</span></span></div>
+    <div class="approach-item"><span class="approach-word-wrap"><span class="approach-num">04</span><span class="approach-word">inclusivity</span></span></div>
   </div>
   <footer>
     <span class="ft-copy">© 2025 Rites Studio</span>
@@ -314,6 +324,7 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
   </div>
   <div class="contact-body">
     <div class="contact-exp">
+      <img class="contact-portrait" src="images/antepavilion2026/img_0472.jpg" alt="Bobby Esposito on site at Antepavilion 2026">
       <h2>areas of expertise</h2>
       <ul class="exp-list">
         <li>[ Architecture ]</li><li>[ Design Consulting ]</li><li>[ Art Installations ]</li>
@@ -344,7 +355,10 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
 <!-- LIGHTBOX -->
 <div id="lightbox">
   <span id="lightbox-close">✕ close</span>
+  <button class="lightbox-arrow" id="lightbox-prev">←</button>
   <img id="lightbox-img" src="" alt="">
+  <button class="lightbox-arrow" id="lightbox-next">→</button>
+  <span class="lightbox-counter" id="lightbox-counter"></span>
 </div>
 
 <script>
@@ -369,12 +383,40 @@ async function loadProjects() {
   initObserver();
 }
 
+// ─── MOSAIC GRID HELPERS (shared by home grid + project galleries) ──
+// Spans are computed per-list (not from a fixed repeating index) so that
+// every row-group — including the LAST one — sums to exactly 6 columns.
+// A tail of 1, 2 or 3 tiles gets a matching full/half/third split instead
+// of falling through the normal cycle, so no gallery, of any length, can
+// ever end with an empty stranded cell.
+function computeSpans(n) {
+  const patterns = [[3,3],[4,2],[2,2,2]];
+  const spans = [];
+  let remaining = n, cycleIdx = 0;
+  while (remaining > 0) {
+    if (remaining === 1) { spans.push(6); remaining = 0; }
+    else if (remaining === 2) { spans.push(3,3); remaining = 0; }
+    else if (remaining === 3) { spans.push(2,2,2); remaining = 0; }
+    else {
+      const pat = patterns[cycleIdx % patterns.length];
+      spans.push(...pat);
+      remaining -= pat.length;
+      cycleIdx++;
+    }
+  }
+  return spans;
+}
+function tileSpanClasses(n) {
+  return computeSpans(n).map(s => 'hg-c' + s);
+}
+
 // ─── RENDER HOME GRID (all projects, image only, dynamic layout) ──
 function renderHome() {
   const grid = document.getElementById('home-grid');
-  grid.innerHTML = PROJECTS.map(p => `
-    <a class="hg-tile rev" data-page="detail" data-proj="${p.key}" href="#">
-      <img src="${p.hero}" alt="${p.theme}" loading="lazy">
+  const spans = tileSpanClasses(PROJECTS.length);
+  grid.innerHTML = PROJECTS.map((p, i) => `
+    <a class="hg-tile rev ${spans[i]}" data-page="detail" data-proj="${p.key}" href="#">
+      <img src="${p.hero}" alt="${p.title}" loading="lazy">
     </a>
   `).join('');
   bindCursorGrow(document.getElementById('p-home'));
@@ -385,9 +427,9 @@ function renderProjectsGrid() {
   const grid = document.getElementById('projects-grid');
   grid.innerHTML = PROJECTS.map(p => `
     <div class="pcard" data-page="detail" data-proj="${p.key}">
-      <img src="${p.hero}" alt="${p.theme}" loading="lazy">
+      <img src="${p.hero}" alt="${p.title}" loading="lazy">
       <div class="pcard-info">
-        <span class="pcard-name">${p.theme}</span>
+        <span class="pcard-name">${p.title}</span>
         <span class="pcard-tag">${p.cardTag || p.tag}</span>
       </div>
     </div>
@@ -408,15 +450,15 @@ function renderDetail(key) {
   const body1Html = p.body1.split('\n\n').map(t => `<p>${t.trim()}</p>`).join('');
   const body2Html = p.body2.split('\n\n').map(t => `<p>${t.trim()}</p>`).join('');
 
-  const carouselImgs = p.images.map((src, i) =>
-    `<img src="${src}" alt="${p.title}" loading="lazy" class="${i===0?'visible':'hidden'}" data-idx="${i}">`
-  ).join('');
-  const carouselThumbs = p.images.map((src, i) =>
-    `<img src="${src}" class="carousel-thumb${i===0?' active':''}" data-idx="${i}" alt="" loading="lazy">`
-  ).join('');
+  const gallerySpans = tileSpanClasses(p.images.length);
+  const galleryImgs = p.images.map((src, i) => `
+    <button type="button" class="hg-tile ${gallerySpans[i]}" data-idx="${i}">
+      <img src="${src}" alt="${p.title}" loading="lazy">
+    </button>
+  `).join('');
 
-  const prevBtn = prevP ? `<a data-page="detail" data-proj="${prevP.key}" href="#">← ${prevP.theme}</a>` : `<span></span>`;
-  const nextBtn = nextP ? `<a data-page="detail" data-proj="${nextP.key}" href="#">${nextP.theme} →</a>` : `<span></span>`;
+  const prevBtn = prevP ? `<a data-page="detail" data-proj="${prevP.key}" href="#">← ${prevP.title}</a>` : `<span></span>`;
+  const nextBtn = nextP ? `<a data-page="detail" data-proj="${nextP.key}" href="#">${nextP.title} →</a>` : `<span></span>`;
 
   document.getElementById('p-detail').innerHTML = `
     <div class="detail-hero">
@@ -433,17 +475,7 @@ function renderDetail(key) {
       <div><h2>${p.h2}</h2>${body1Html}</div>
       <div>${body2Html}</div>
     </div>
-    <div class="carousel" id="carousel">
-      <div class="carousel-main" id="carousel-main">
-        ${carouselImgs}
-        <div class="carousel-arrows">
-          <button class="carousel-arrow" id="car-prev">←</button>
-          <button class="carousel-arrow" id="car-next">→</button>
-        </div>
-        <span class="carousel-counter" id="car-counter">1 / ${p.images.length}</span>
-      </div>
-      <div class="carousel-thumbs" id="carousel-thumbs">${carouselThumbs}</div>
-    </div>
+    <div class="home-grid detail-gallery" id="detail-gallery">${galleryImgs}</div>
     <div class="detail-nav">${prevBtn}${nextBtn}</div>
     <footer>
       <span class="ft-copy">© 2025 Rites Studio</span>
@@ -451,35 +483,10 @@ function renderDetail(key) {
     </footer>
   `;
 
-  // carousel
-  let carIdx = 0, carTimer;
-  const carImgs   = document.querySelectorAll('#carousel-main img[data-idx]');
-  const carThumbs = document.querySelectorAll('#carousel-thumbs .carousel-thumb');
-  const carCounter = document.getElementById('car-counter');
-  const total = carImgs.length;
-
-  function carGo(idx) {
-    carImgs[carIdx].className = 'hidden';
-    carThumbs[carIdx].classList.remove('active');
-    carIdx = (idx + total) % total;
-    carImgs[carIdx].className = 'visible';
-    carThumbs[carIdx].classList.add('active');
-    carCounter.textContent = `${carIdx+1} / ${total}`;
-    // scroll thumb within its container only, never hijack page scroll
-    const thumbsEl = document.getElementById('carousel-thumbs');
-    const activeThumb = carThumbs[carIdx];
-    if (thumbsEl && activeThumb) {
-      thumbsEl.scrollLeft = activeThumb.offsetLeft - (thumbsEl.offsetWidth / 2) + (activeThumb.offsetWidth / 2);
-    }
-    resetTimer();
-  }
-  function resetTimer() { clearInterval(carTimer); carTimer = setInterval(() => carGo(carIdx+1), 4000); }
-
-  document.getElementById('car-prev').addEventListener('click', e => { e.stopPropagation(); carGo(carIdx-1); });
-  document.getElementById('car-next').addEventListener('click', e => { e.stopPropagation(); carGo(carIdx+1); });
-  carThumbs.forEach(t => t.addEventListener('click', () => carGo(+t.dataset.idx)));
-  document.getElementById('carousel-main').addEventListener('click', () => openLightbox(carImgs[carIdx].src));
-  resetTimer();
+  // gallery tiles open the lightbox, scoped to this project's own images
+  document.querySelectorAll('#detail-gallery .hg-tile').forEach(tile => {
+    tile.addEventListener('click', () => openLightbox(p.images, +tile.dataset.idx));
+  });
 
   bindCursorGrow(document.getElementById('p-detail'));
 }
@@ -503,11 +510,22 @@ function goTo(pageId, proj) {
       const match = pageId === 'detail' ? a.dataset.page === 'projects' : a.dataset.page === pageId;
       a.classList.toggle('active', match);
     });
+    document.body.classList.toggle('on-detail', pageId === 'detail');
     window.scrollTo(0,0);
+    updateNavState();
     veil.className = 'out';
     setTimeout(() => { veil.className = ''; initObserver(); }, 450);
   }, 420);
 }
+
+// ─── NAV SCROLL STATE (logo reveal + light/dark flip past the fold) ──
+function updateNavState(){
+  const activePage = document.querySelector('.page.on');
+  const heroEl = activePage ? activePage.querySelector('.home-hero, .detail-hero') : null;
+  const threshold = heroEl ? heroEl.offsetHeight * 0.85 : 200;
+  document.querySelector('nav').classList.toggle('scrolled', window.scrollY > threshold);
+}
+window.addEventListener('scroll', updateNavState, {passive:true});
 
 // ─── CLICK DELEGATION ────────────────────────────────────
 document.addEventListener('click', e => {
@@ -553,11 +571,38 @@ if(contactForm){
 // ─── LIGHTBOX ─────────────────────────────────────────────
 const lb=document.getElementById('lightbox');
 const lbImg=document.getElementById('lightbox-img');
-function openLightbox(src){lbImg.src=src;lb.classList.add('open');document.body.style.overflow='hidden';}
+const lbPrev=document.getElementById('lightbox-prev');
+const lbNext=document.getElementById('lightbox-next');
+const lbCounter=document.getElementById('lightbox-counter');
+let lbImages=[], lbIdx=0;
+function lbRender(){
+  lbImg.src=lbImages[lbIdx];
+  const multi=lbImages.length>1;
+  lbPrev.style.display=lbNext.style.display=multi?'block':'none';
+  lbCounter.style.display=multi?'block':'none';
+  lbCounter.textContent=`${lbIdx+1} / ${lbImages.length}`;
+}
+function openLightbox(images,idx){
+  // allow the old single-image call style (openLightbox(src)) just in case
+  lbImages = Array.isArray(images) ? images : [images];
+  lbIdx = idx || 0;
+  lbRender();
+  lb.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function lbGo(delta){ lbIdx=(lbIdx+delta+lbImages.length)%lbImages.length; lbRender(); }
 function closeLightbox(){lb.classList.remove('open');lbImg.src='';document.body.style.overflow='';}
 lb.addEventListener('click',closeLightbox);
+lbImg.addEventListener('click',e=>e.stopPropagation());
+lbPrev.addEventListener('click',e=>{e.stopPropagation();lbGo(-1);});
+lbNext.addEventListener('click',e=>{e.stopPropagation();lbGo(1);});
 document.getElementById('lightbox-close').addEventListener('click',closeLightbox);
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
+document.addEventListener('keydown',e=>{
+  if(!lb.classList.contains('open'))return;
+  if(e.key==='Escape')closeLightbox();
+  if(e.key==='ArrowLeft')lbGo(-1);
+  if(e.key==='ArrowRight')lbGo(1);
+});
 
 // ─── SCROLL REVEAL ────────────────────────────────────────
 function initObserver(){
