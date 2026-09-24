@@ -7,15 +7,16 @@
 <meta name="description" content="Rites Studio partners with creatives & communities to transform public spaces. Our mindful, human-centric design fosters connection & shared experience for all.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Manufacturing+Consent&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
 <style>
+@font-face{font-family:'Exodus';src:url('fonts/Exodus.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 :root{
   --black:#0a0a09;--off-white:#f2f0ea;--warm-grey:#9b9590;--accent:#c9b99a;
   --rule:rgba(242,240,234,0.1);
   --display:'Anton',sans-serif;
-  --blackletter:'Manufacturing Consent','UnifrakturCook',cursive;
+  --blackletter:'Exodus','Manufacturing Consent',cursive;
   --copy:'Cormorant Garamond','Times New Roman',serif;
   --nav-h:68px;--pad:clamp(24px,4vw,60px);
 }
@@ -40,9 +41,9 @@ a{text-decoration:none;color:inherit;}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);}
-.nav-logo{font-family:var(--display);font-size:22px;letter-spacing:.02em;color:var(--off-white);opacity:1;pointer-events:auto;transition:opacity .35s ease,color .35s ease;cursor:none;}
-.nav-logo .lg-bl,.wm-rites .lg-bl,.wm-studio .lg-bl{font-family:var(--blackletter);font-weight:400;}
-.nav-logo .lg-bl{font-size:1.25em;line-height:0;vertical-align:-0.08em;}
+.nav-logo,.wm-logo{font-family:var(--display);letter-spacing:.02em;color:var(--off-white);}
+.nav-logo{font-size:22px;opacity:1;pointer-events:auto;transition:opacity .35s ease,color .35s ease;cursor:none;}
+.nav-logo .lg-bl,.wm-logo .lg-bl{font-family:var(--blackletter);font-weight:400;font-size:1.25em;line-height:0;vertical-align:-0.08em;}
 /* Logo hides above the fold only on the homepage; every other page keeps it constant */
 body.on-home nav:not(.scrolled) .nav-logo{opacity:0;pointer-events:none;}
 body.on-detail nav.scrolled .nav-logo{color:var(--black);}
@@ -69,10 +70,8 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .home-hero::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");background-size:200px;z-index:1;}
 .home-hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:
     linear-gradient(to bottom, rgba(10,10,9,.62) 0%, rgba(10,10,9,.18) 32%, rgba(10,10,9,.28) 68%, rgba(10,10,9,.75) 100%);}
-.hero-wordmark{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;opacity:0;transform:translateY(24px);animation:up 1.1s cubic-bezier(.16,1,.3,1) .25s forwards;}
-.wm-rites{font-family:var(--display);font-size:clamp(90px,19vw,280px);line-height:.82;letter-spacing:0;color:var(--off-white);}
-.wm-studio{margin-top:-4px;font-family:var(--display);font-size:clamp(28px,4.2vw,56px);letter-spacing:.03em;color:var(--accent);}
-.wm-rites .lg-bl,.wm-studio .lg-bl{font-size:1.1em;}
+.hero-wordmark{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(24px);animation:up 1.1s cubic-bezier(.16,1,.3,1) .25s forwards;}
+.wm-logo{font-size:clamp(40px,6vw,84px);line-height:1;}
 .hero-scroll{position:relative;z-index:2;margin-top:clamp(40px,8vh,90px);font-family:var(--copy);font-style:italic;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:rgba(242,240,234,.55);opacity:0;animation:up .9s ease .8s forwards;}
 @keyframes up{to{opacity:1;transform:none;}}
 
@@ -264,8 +263,7 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
 <div class="page on" id="p-home">
   <section class="home-hero">
     <div class="hero-wordmark">
-      <span class="wm-rites"><span class="lg-bl">R</span>ITES</span>
-      <span class="wm-studio"><span class="lg-bl">S</span>tudio</span>
+      <span class="wm-logo"><span class="lg-bl">R</span>ites <span class="lg-bl">S</span>tudio</span>
     </div>
     <span class="hero-scroll">Scroll — selected work</span>
   </section>
