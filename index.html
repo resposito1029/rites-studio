@@ -7,8 +7,15 @@
 <meta name="description" content="Rites Studio partners with creatives & communities to transform public spaces. Our mindful, human-centric design fosters connection & shared experience for all.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
+@font-face{
+  font-family:'Intan';
+  src:url('fonts/Intan.woff2') format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 :root{
@@ -17,11 +24,16 @@ html{scroll-behavior:smooth;}
   --serif:'Fraunces','Times New Roman',serif;
   --mono:'JetBrains Mono','Courier New',monospace;
   --display:'Anton',sans-serif;
+  --wordmark:'Intan','Helvetica Neue',sans-serif;
+  --copy:'Cormorant Garamond','Times New Roman',serif;
   --nav-h:68px;--pad:clamp(24px,4vw,60px);
 }
 body{background:var(--black);color:var(--off-white);font-family:var(--mono);font-weight:300;font-size:13px;line-height:1.6;overflow-x:hidden;cursor:none;}
 img{display:block;max-width:100%;}
 a{text-decoration:none;color:inherit;}
+
+/* PAPER GRAIN — subtle texture over every page, like uncoated paper stock */
+.grain{position:fixed;inset:0;z-index:1000;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");background-size:220px;}
 
 /* CURSOR */
 #cur{position:fixed;width:7px;height:7px;border-radius:50%;background:var(--off-white);pointer-events:none;z-index:9000;transform:translate(-50%,-50%);transition:width .25s,height .25s;mix-blend-mode:difference;}
@@ -37,10 +49,10 @@ a{text-decoration:none;color:inherit;}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);}
-.nav-logo{opacity:0;pointer-events:none;transition:opacity .35s ease;}
-nav.scrolled .nav-logo{opacity:1;pointer-events:auto;}
-.nav-logo img{height:56px;filter:brightness(0) invert(1);cursor:none;transition:filter .35s ease;}
-body.on-detail nav.scrolled .nav-logo img{filter:brightness(0);}
+.nav-logo{font-family:var(--wordmark);font-weight:700;font-size:26px;letter-spacing:.01em;color:var(--off-white);opacity:1;pointer-events:auto;transition:opacity .35s ease,color .35s ease;cursor:none;}
+/* Logo hides above the fold only on the homepage; every other page keeps it constant */
+body.on-home nav:not(.scrolled) .nav-logo{opacity:0;pointer-events:none;}
+body.on-detail nav.scrolled .nav-logo{color:var(--black);}
 body.on-detail nav.scrolled .nav-links a{color:var(--black);}
 body.on-detail nav.scrolled .ham span{background:var(--black);}
 .nav-links{display:flex;gap:32px;align-items:center;list-style:none;}
@@ -65,19 +77,24 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .home-hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:
     linear-gradient(to bottom, rgba(10,10,9,.62) 0%, rgba(10,10,9,.18) 32%, rgba(10,10,9,.28) 68%, rgba(10,10,9,.75) 100%);}
 .hero-wordmark{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;opacity:0;transform:translateY(24px);animation:up 1.1s cubic-bezier(.16,1,.3,1) .25s forwards;}
-.wm-rites{font-family:var(--display);font-size:clamp(72px,16vw,240px);line-height:.88;letter-spacing:.01em;color:var(--off-white);}
-.wm-studio{margin-top:6px;font-family:var(--serif);font-size:clamp(20px,3vw,40px);font-style:italic;font-weight:400;letter-spacing:.08em;color:var(--accent);}
+.wm-rites{font-family:var(--wordmark);font-weight:700;font-size:clamp(90px,19vw,280px);line-height:.82;letter-spacing:0;color:var(--off-white);}
+.wm-studio{margin-top:-4px;font-family:var(--wordmark);font-size:clamp(28px,4.2vw,56px);font-weight:700;letter-spacing:.03em;color:var(--accent);}
 .hero-scroll{position:relative;z-index:2;margin-top:clamp(40px,8vh,90px);font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,240,234,.55);opacity:0;animation:up .9s ease .8s forwards;}
 @keyframes up{to{opacity:1;transform:none;}}
 
 /* HOME WORK GRID (dynamic image tiles, no text overlay) */
-/* Column-span-only mosaic: every row-group of tiles sums to exactly 6
-   columns, and grid-auto-flow stays at its default (row, not dense), so
-   the browser can never strand an unfillable gap in the middle of the
-   grid — the only possible short row is the very last one, at the end. */
+/* Bento mosaic: tiles are laid out in fixed 6-col x 2-row blocks (see
+   computeMosaic in JS) where the spans always sum to exactly 12 cells,
+   so a block tiles perfectly with zero gaps regardless of how tall its
+   tiles are — some tiles bleed across both rows for scale variety. The
+   short tail (0-4 leftover tiles) falls back to simple single-row spans
+   that still always sum to 6. grid-auto-flow stays default (never
+   dense), so nothing is ever stranded. Row height scales with viewport
+   width so tiles keep a reasonable minimum aspect ratio on wide screens
+   instead of going short-and-wide.  */
 .home-grid-section{border-top:1px solid var(--rule);margin-top:0;}
 .hg-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--warm-grey);padding:28px var(--pad) 20px;}
-.home-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:220px;gap:4px;padding:0 var(--pad) var(--pad);}
+.home-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:clamp(220px,22vw,460px);gap:4px;padding:0 var(--pad) var(--pad);}
 .hg-tile{position:relative;overflow:hidden;cursor:none;background:#111;display:block;width:100%;height:100%;border:0;margin:0;padding:0;font:inherit;text-align:left;}
 .hg-tile img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(20%) brightness(.82);transition:transform .8s cubic-bezier(.16,1,.3,1),filter .5s;}
 .hg-tile:hover img{transform:scale(1.05);filter:grayscale(0%) brightness(1);}
@@ -85,6 +102,7 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .hg-tile.hg-c3{grid-column:span 3;}
 .hg-tile.hg-c4{grid-column:span 4;}
 .hg-tile.hg-c6{grid-column:span 6;}
+.hg-tile.hg-r2{grid-row:span 2;}
 .detail-gallery{padding-bottom:80px;}
 
 /* PROJECTS GRID */
@@ -112,13 +130,13 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .detail-tag{margin-top:18px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);opacity:.75;}
 .detail-body{display:grid;grid-template-columns:1fr 1fr;gap:60px;padding:72px var(--pad);}
 .detail-body h2{font-family:var(--serif);font-size:clamp(22px,2.5vw,34px);font-weight:400;font-style:italic;color:var(--off-white);margin-bottom:20px;line-height:1.25;}
-.detail-body p{font-size:13px;line-height:1.9;color:rgba(240,236,228,.65);margin-bottom:16px;}
+.detail-body p{font-family:var(--copy);font-size:17px;font-weight:400;line-height:1.7;color:rgba(240,236,228,.6);margin-bottom:16px;}
 .detail-body em{font-style:italic;color:var(--off-white);}
 
 /* PROJECT PAGE — LIGHT THEME */
 #p-detail{background:var(--off-white);}
 #p-detail .detail-body h2{color:var(--black);}
-#p-detail .detail-body p{color:rgba(10,10,9,.62);}
+#p-detail .detail-body p{color:rgba(10,10,9,.58);}
 #p-detail .detail-body em{color:var(--black);}
 #p-detail .hg-tile{background:#e5e2d9;}
 #p-detail .detail-nav{border-top:1px solid rgba(10,10,9,.12);}
@@ -150,9 +168,8 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .about-hero{display:grid;grid-template-columns:1fr 1fr;gap:60px;padding:calc(var(--nav-h) + 80px) var(--pad) 80px;}
 .about-hero h1{font-family:var(--serif);font-size:clamp(52px,8vw,104px);font-weight:300;font-style:italic;line-height:.9;opacity:0;animation:up .9s cubic-bezier(.16,1,.3,1) .1s forwards;}
 .about-copy{opacity:0;animation:up .9s cubic-bezier(.16,1,.3,1) .3s forwards;}
-.about-copy p{font-size:13px;line-height:1.9;color:rgba(240,236,228,.65);margin-bottom:18px;}
+.about-copy p{font-family:var(--copy);font-size:19px;font-weight:400;line-height:1.6;color:rgba(240,236,228,.6);margin-bottom:18px;}
 .about-byline{display:flex;align-items:center;gap:14px;margin-top:8px;}
-.about-byline img{width:52px;height:52px;border-radius:50%;object-fit:cover;filter:grayscale(20%);}
 .about-byline span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-grey);}
 .approach{padding:0 var(--pad) 100px;}
 .approach-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--warm-grey);margin-bottom:40px;}
@@ -176,7 +193,7 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .exp-list li.vis{opacity:.8;transform:none;}
 .exp-list li:hover{opacity:1;color:var(--accent);}
 .contact-right{display:flex;flex-direction:column;justify-content:space-between;}
-.contact-right p{font-size:13px;line-height:1.9;color:rgba(240,236,228,.6);margin-bottom:44px;}
+.contact-right p{font-family:var(--copy);font-size:19px;font-weight:400;line-height:1.6;color:rgba(240,236,228,.58);margin-bottom:44px;}
 .contact-form{display:flex;flex-direction:column;gap:16px;}
 .contact-form input,.contact-form textarea{width:100%;background:transparent;border:none;border-bottom:1px solid var(--rule);color:var(--off-white);font-family:var(--mono);font-size:12px;font-weight:300;padding:12px 0;outline:none;transition:border-color .25s;-webkit-appearance:none;}
 .contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--warm-grey);}
@@ -212,6 +229,7 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
   .nav-links{display:none;}.ham{display:flex;}.mob-menu{display:flex;}
   .home-hero{padding-bottom:60px;}
   .home-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:220px;}
+  .home-grid{grid-auto-rows:220px;}
   .home-grid .hg-tile{grid-column:span 1 !important;grid-row:span 1 !important;}
   .plist-grid{grid-template-columns:1fr;}
   .detail-body{grid-template-columns:1fr;gap:32px;padding:48px var(--pad);}
@@ -222,17 +240,16 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
 }
 </style>
 </head>
-<body>
+<body class="on-home">
 
 <div id="site-loader"><span class="loader-mark">rites studio</span></div>
 <div id="cur"></div>
 <div id="veil"></div>
+<div class="grain" aria-hidden="true"></div>
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" data-page="home" href="#">
-    <img src="https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/ab2c8820-82c6-41dd-aa79-b5b5c9c9534c/25_0505-FINAL_LOGO-INVERTED.png?format=750w" alt="Rites Studio">
-  </a>
+  <a class="nav-logo" data-page="home" href="#">Rites Studio</a>
   <ul class="nav-links">
     <li><a data-page="projects" href="#">Projects</a></li>
     <li><a data-page="about"    href="#">About</a></li>
@@ -296,7 +313,6 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
       <p>We transform spaces into sites for reflection, profound emotion, and shared human experience. Our work is intimate and small but leaves you with a feeling of something greater. We make places of pause, not of passing fascination. Places of gravity that bring together humanity.</p>
       <p>Our process is rooted in fluid collaboration, adaptability, and experimentation, ensuring that every Rites Studio installation is a unique and responsive creation, born of its place. We are driven by a mission of mindfulness—to create work that enhances, not detracts from the community it's in.</p>
       <div class="about-byline">
-        <img src="images/about/bobby-esposito.jpg" alt="Bobby Esposito">
         <span>Bobby Esposito — Founder</span>
       </div>
     </div>
@@ -324,7 +340,7 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
   </div>
   <div class="contact-body">
     <div class="contact-exp">
-      <img class="contact-portrait" src="images/antepavilion2026/img_0472.jpg" alt="Bobby Esposito on site at Antepavilion 2026">
+      <img class="contact-portrait" src="images/about/bobby-esposito.jpg" alt="Bobby Esposito">
       <h2>areas of expertise</h2>
       <ul class="exp-list">
         <li>[ Architecture ]</li><li>[ Design Consulting ]</li><li>[ Art Installations ]</li>
@@ -384,36 +400,43 @@ async function loadProjects() {
 }
 
 // ─── MOSAIC GRID HELPERS (shared by home grid + project galleries) ──
-// Spans are computed per-list (not from a fixed repeating index) so that
-// every row-group — including the LAST one — sums to exactly 6 columns.
-// A tail of 1, 2 or 3 tiles gets a matching full/half/third split instead
-// of falling through the normal cycle, so no gallery, of any length, can
-// ever end with an empty stranded cell.
-function computeSpans(n) {
-  const patterns = [[3,3],[4,2],[2,2,2]];
-  const spans = [];
-  let remaining = n, cycleIdx = 0;
-  while (remaining > 0) {
-    if (remaining === 1) { spans.push(6); remaining = 0; }
-    else if (remaining === 2) { spans.push(3,3); remaining = 0; }
-    else if (remaining === 3) { spans.push(2,2,2); remaining = 0; }
-    else {
-      const pat = patterns[cycleIdx % patterns.length];
-      spans.push(...pat);
-      remaining -= pat.length;
-      cycleIdx++;
-    }
+// Tiles are laid out in fixed 6-col x 2-row blocks whose spans always sum
+// to exactly 12 cells, so a block tiles with zero gaps under the browser's
+// default (non-dense) auto-placement — it fills left-to-right within a
+// row before advancing, so a tall (row-span-2) tile just gets stepped
+// around, never leaving a hole. Two block shapes (tall tile on the left,
+// tall tile on the right) alternate for scale variety across rows. A
+// short tail (0-4 leftover tiles) falls back to simple single-row spans
+// that still always sum to 6, so any list length ends clean.
+const MOSAIC_BLOCKS = [
+  [{c:2,r:2},{c:2,r:1},{c:2,r:1},{c:2,r:1},{c:2,r:1}], // tall tile, left
+  [{c:2,r:1},{c:2,r:1},{c:2,r:2},{c:2,r:1},{c:2,r:1}], // tall tile, right
+];
+const MOSAIC_TAIL = {
+  1: [{c:6,r:1}],
+  2: [{c:3,r:1},{c:3,r:1}],
+  3: [{c:2,r:1},{c:2,r:1},{c:2,r:1}],
+  4: [{c:3,r:1},{c:3,r:1},{c:3,r:1},{c:3,r:1}],
+};
+function computeMosaic(n) {
+  const cells = [];
+  let remaining = n, blockIdx = 0;
+  while (remaining >= 5) {
+    cells.push(...MOSAIC_BLOCKS[blockIdx % MOSAIC_BLOCKS.length]);
+    remaining -= 5;
+    blockIdx++;
   }
-  return spans;
+  if (remaining > 0) cells.push(...MOSAIC_TAIL[remaining]);
+  return cells;
 }
-function tileSpanClasses(n) {
-  return computeSpans(n).map(s => 'hg-c' + s);
+function mosaicClasses(n) {
+  return computeMosaic(n).map(({c, r}) => 'hg-c' + c + (r === 2 ? ' hg-r2' : ''));
 }
 
 // ─── RENDER HOME GRID (all projects, image only, dynamic layout) ──
 function renderHome() {
   const grid = document.getElementById('home-grid');
-  const spans = tileSpanClasses(PROJECTS.length);
+  const spans = mosaicClasses(PROJECTS.length);
   grid.innerHTML = PROJECTS.map((p, i) => `
     <a class="hg-tile rev ${spans[i]}" data-page="detail" data-proj="${p.key}" href="#">
       <img src="${p.hero}" alt="${p.title}" loading="lazy">
@@ -450,7 +473,7 @@ function renderDetail(key) {
   const body1Html = p.body1.split('\n\n').map(t => `<p>${t.trim()}</p>`).join('');
   const body2Html = p.body2.split('\n\n').map(t => `<p>${t.trim()}</p>`).join('');
 
-  const gallerySpans = tileSpanClasses(p.images.length);
+  const gallerySpans = mosaicClasses(p.images.length);
   const galleryImgs = p.images.map((src, i) => `
     <button type="button" class="hg-tile ${gallerySpans[i]}" data-idx="${i}">
       <img src="${src}" alt="${p.title}" loading="lazy">
@@ -511,6 +534,7 @@ function goTo(pageId, proj) {
       a.classList.toggle('active', match);
     });
     document.body.classList.toggle('on-detail', pageId === 'detail');
+    document.body.classList.toggle('on-home', pageId === 'home');
     window.scrollTo(0,0);
     updateNavState();
     veil.className = 'out';
