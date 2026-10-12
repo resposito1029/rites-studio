@@ -7,7 +7,7 @@
 <meta name="description" content="Rites Studio partners with creatives & communities to transform public spaces. Our mindful, human-centric design fosters connection & shared experience for all.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
 <style>
 @font-face{font-family:'Exodus';src:url('fonts/Exodus.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -41,7 +41,7 @@ a{text-decoration:none;color:inherit;}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);}
-.nav-logo,.wm-logo{font-family:var(--blackletter);font-weight:400;letter-spacing:.02em;color:var(--off-white);}
+.nav-logo{font-family:var(--blackletter);font-weight:400;letter-spacing:.02em;color:var(--off-white);}
 .nav-logo{font-size:24px;opacity:1;pointer-events:auto;transition:opacity .35s ease,color .35s ease;cursor:none;}
 /* Logo hides above the fold only on the homepage; every other page keeps it constant */
 body.on-home nav:not(.scrolled) .nav-logo{opacity:0;pointer-events:none;}
@@ -65,13 +65,28 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .page{display:none;}.page.on{display:block;}
 
 /* HOME HERO */
-.home-hero{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:var(--nav-h) var(--pad) clamp(48px,7vh,100px);position:relative;overflow:hidden;background-image:url("images/_hero/rites-studio-hero-night.jpg");background-size:cover;background-position:center 40%;}
+.home-hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:var(--nav-h) var(--pad) clamp(48px,7vh,100px);position:relative;overflow:hidden;}
 .home-hero::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");background-size:200px;z-index:1;}
-.home-hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:
-    linear-gradient(to bottom, rgba(10,10,9,.62) 0%, rgba(10,10,9,.18) 32%, rgba(10,10,9,.28) 68%, rgba(10,10,9,.75) 100%);}
-.hero-wordmark{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(24px);animation:up 1.1s cubic-bezier(.16,1,.3,1) .25s forwards;}
-.wm-logo{font-size:clamp(40px,6vw,84px);line-height:1;}
-.hero-scroll{position:relative;z-index:2;margin-top:clamp(40px,8vh,90px);font-family:var(--copy);font-style:italic;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:rgba(242,240,234,.55);opacity:0;animation:up .9s ease .8s forwards;}
+/* HERO LOGO REEL — slot-machine flip through the hand-drawn RITES sketches (images/logo-reel/).
+   Frames are 1060x730 transparent WebP. "studio", the floating symbols and the scroll cue
+   fade in once the first spin settles. */
+.home-hero{--reel-w:min(80vw,680px,calc((100svh - var(--nav-h) - 220px) * 1.452));}
+.hero-symbols{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 1.4s ease;}
+.hero-symbols.on{opacity:1;}
+.hero-sym{position:absolute;top:0;color:rgba(184,169,138,.45);user-select:none;line-height:1;}
+@keyframes floatSym{
+  0%{transform:translateY(110vh) rotate(0deg);opacity:0;}
+  5%{opacity:1;}
+  95%{opacity:.6;}
+  100%{transform:translateY(-12vh) rotate(360deg);opacity:0;}
+}
+.hero-reel{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:clamp(4px,1.2vh,12px);background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;cursor:none;-webkit-tap-highlight-color:transparent;}
+.hero-reel canvas{display:block;width:var(--reel-w);height:auto;aspect-ratio:1060/730;}
+.hero-reel:focus-visible{outline:1px solid var(--accent);outline-offset:10px;}
+.hero-studio{display:flex;justify-content:space-between;width:calc(var(--reel-w) * .44);font-family:'Archivo','Helvetica Neue',Arial,sans-serif;font-weight:300;font-size:max(12px,calc(var(--reel-w) * .034));line-height:1;color:var(--off-white);opacity:0;transform:translateY(6px);transition:opacity 1.2s ease,transform 1.2s ease;pointer-events:none;}
+.hero-studio.on{opacity:1;transform:none;}
+.hero-scroll{position:relative;z-index:2;margin-top:clamp(32px,6vh,80px);font-family:var(--copy);font-style:italic;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:rgba(242,240,234,.55);opacity:0;transition:opacity .9s ease .4s;}
+.hero-scroll.on{opacity:1;}
 @keyframes up{to{opacity:1;transform:none;}}
 
 /* HOME WORK GRID (dynamic image tiles, no text overlay) */
@@ -212,11 +227,6 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
 .rev{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease;}
 .rev.vis{opacity:1;transform:none;}
 
-/* LOADING */
-#site-loader{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;align-items:center;justify-content:center;}
-.loader-mark{font-family:var(--copy);font-size:16px;font-style:italic;color:rgba(184,169,138,.4);animation:pulse 1.5s ease infinite;}
-@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}
-
 @media(max-width:768px){
   .nav-links{display:none;}.ham{display:flex;}.mob-menu{display:flex;}
   .home-hero{padding-bottom:60px;}
@@ -234,7 +244,6 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
 </head>
 <body class="on-home">
 
-<div id="site-loader"><span class="loader-mark">rites studio</span></div>
 <div id="cur"></div>
 <div id="veil"></div>
 <div class="grain" aria-hidden="true"></div>
@@ -261,10 +270,12 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
 <!-- HOME -->
 <div class="page on" id="p-home">
   <section class="home-hero">
-    <div class="hero-wordmark">
-      <span class="wm-logo">Rites Studio</span>
-    </div>
-    <span class="hero-scroll">Scroll — selected work</span>
+    <div class="hero-symbols" id="hero-symbols" aria-hidden="true"></div>
+    <button class="hero-reel" id="hero-reel" type="button" aria-label="Rites Studio logo. Click to spin to another sketch.">
+      <canvas id="hero-reel-cv" width="1060" height="730" aria-hidden="true"></canvas>
+      <span class="hero-studio" id="hero-studio" aria-hidden="true"><span>s</span><span>t</span><span>u</span><span>d</span><span>i</span><span>o</span></span>
+    </button>
+    <span class="hero-scroll" id="hero-scroll">Scroll — selected work</span>
   </section>
   <section class="home-grid-section">
     <p class="hg-label">— selected work</p>
@@ -386,7 +397,6 @@ async function loadProjects() {
   }
   renderHome();
   renderProjectsGrid();
-  document.getElementById('site-loader').style.display = 'none';
   initObserver();
 }
 
@@ -630,6 +640,172 @@ function initObserver(){
   },{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
   targets.forEach(t=>obs.observe(t));
 }
+
+// ─── HERO LOGO REEL ──────────────────────────────────────
+// Slot-machine flip through the hand-drawn RITES sketches.
+// Page load always plays REEL.order and settles on its last frame.
+// Each click on the logo spins a fresh shuffle that lands on a different sketch.
+const REEL = {
+  dir: 'images/logo-reel/',
+  order: [
+    'p45-0', 'p49-2', 'p42-1', 'p09-0', 'p30-0', 'p43-2', 'p37-0', 'p50-3', 'p44-0', 'p22-0', 'p43-3',
+    'p15-0', 'p47-3', 'p01-0', 'p05-0', 'p24-1', 'p20-7', 'p26-0', 'p40-0', 'p19-4', 'p08-0', 'p49-1',
+    'p21-2', 'p47-0', 'p19-2', 'p24-2', 'p39-0', 'p20-0', 'p46-2', 'p13-0', 'p31-0', 'p47-2', 'p19-3',
+    'p23-3', 'p17-0', 'p03-0', 'p52-0', 'p28-0', 'p51-2', 'p29-0', 'p51-3', 'p11-0', 'p42-0', 'p07-0',
+    'p43-1', 'p02-0', 'p22-2', 'p51-0', 'p25-2', 'p14-0', 'p21-3', 'p25-1', 'p32-0', 'p23-0', 'p41-0',
+    'p48-1', 'p19-5', 'p10-0', 'p46-0', 'p24-0', 'p18-0', 'p48-2', 'p35-0', 'p19-0', 'p36-0', 'p49-0',
+    'p21-4', 'p50-0', 'p20-4', 'p48-3', 'p04-0', 'p43-0', 'p47-1', 'p20-8', 'p47-4', 'p46-3', 'p23-2',
+    'p50-2', 'p50-1', 'p23-1', 'p21-5', 'p34-0', 'p48-0', 'p46-1', 'p16-0', 'p27-0', 'p22-1', 'p51-1',
+  ],
+  spinMs: 30,       // steady spin, ms per frame
+  slowFrames: 12,   // how many frames the slowdown is spread over
+  stopMs: 500,      // the slowest frame, just before the logo settles
+  minGap: 4,        // shuffled neighbours stay at least this many sketchbook pages apart
+};
+(function heroReel(){
+  const btn = document.getElementById('hero-reel');
+  if (!btn) return;
+  const cv = document.getElementById('hero-reel-cv');
+  const ctx = cv.getContext('2d');
+  const studio = document.getElementById('hero-studio');
+  const scrollCue = document.getElementById('hero-scroll');
+  const symWrap = document.getElementById('hero-symbols');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pageOf = id => parseInt(id.slice(1), 10);
+
+  // frames are decoded once, then drawn to the canvas
+  const frames = new Map();
+  function load(id){
+    if (!frames.has(id)) {
+      const im = new Image();
+      const entry = { im, ready: false };
+      im.src = REEL.dir + id + '.webp';
+      const decoded = im.decode ? im.decode() : new Promise((res, rej) => { im.onload = res; im.onerror = rej; });
+      entry.p = decoded.then(() => { entry.ready = true; return true; }).catch(() => false);
+      frames.set(id, entry);
+    }
+    return frames.get(id).p;
+  }
+  const ready = id => !!(frames.get(id) && frames.get(id).ready);
+
+  let current = null;
+  function draw(id){
+    if (!ready(id)) return false;   // still loading: keep the previous frame up
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.drawImage(frames.get(id).im, 0, 0, cv.width, cv.height);
+    current = id;
+    return true;
+  }
+  function fit(){
+    const w = cv.getBoundingClientRect().width;
+    if (!w) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = Math.round(w * dpr), H = Math.round(w * dpr * 730 / 1060);
+    if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; if (current) draw(current); }
+  }
+  if ('ResizeObserver' in window) new ResizeObserver(fit).observe(cv);
+  else window.addEventListener('resize', fit);
+
+  // steady spin, then the last few frames slow down geometrically
+  function delays(n){
+    const k = Math.min(REEL.slowFrames, n), out = [];
+    for (let i = 0; i < n; i++) {
+      const j = i - (n - k);
+      out.push(j < 0 ? REEL.spinMs : REEL.spinMs * Math.pow(REEL.stopMs / REEL.spinMs, k > 1 ? j / (k - 1) : 1));
+    }
+    return out;
+  }
+
+  let spinning = false;
+  function spin(seq, done){
+    spinning = true;
+    btn.setAttribute('aria-busy', 'true');
+    const d = delays(seq.length), at = [0];
+    for (let i = 1; i < seq.length; i++) at.push(at[i - 1] + d[i - 1]);
+    let t0 = null, shown = -1;
+    function tick(now){
+      if (t0 === null) t0 = now;
+      const t = now - t0;
+      let i = shown;
+      while (i + 1 < seq.length && at[i + 1] <= t) i++;
+      if (i !== shown) { draw(seq[i]); shown = i; }
+      if (shown < seq.length - 1) requestAnimationFrame(tick);
+      else { spinning = false; btn.removeAttribute('aria-busy'); if (done) done(); }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // shuffle that keeps neighbours apart and never stops on the sketch it started from
+  function shuffled(ids, from){
+    for (const gap of [REEL.minGap, 3, 2, 1, 0]) {
+      for (let attempt = 0; attempt < 60; attempt++) {
+        const pool = ids.slice();
+        for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+        const out = [];
+        let prev = from;
+        while (pool.length) {
+          const cands = pool.filter(id => id !== prev && (!prev || Math.abs(pageOf(id) - pageOf(prev)) >= gap));
+          if (!cands.length) break;
+          const pick = cands[Math.floor(Math.random() * cands.length)];
+          pool.splice(pool.indexOf(pick), 1);
+          out.push(pick);
+          prev = pick;
+        }
+        if (!pool.length && out[out.length - 1] !== from) return out;
+      }
+    }
+    return ids.filter(id => id !== from).sort(() => Math.random() - 0.5);
+  }
+
+  function seedSymbols(){
+    const syms = ['✦','○','△','◇','✕','—','∞','◯','✧','⊹','×','◻'];
+    for (let i = 0; i < 18; i++) {
+      const el = document.createElement('span');
+      el.className = 'hero-sym';
+      el.textContent = syms[Math.floor(Math.random() * syms.length)];
+      el.style.left = Math.random() * 100 + '%';
+      el.style.fontSize = (16 + Math.random() * 20) + 'px';
+      if (reduce) {
+        el.style.top = Math.random() * 90 + '%';
+      } else {
+        const dur = 18 + Math.random() * 22;
+        el.style.animation = 'floatSym ' + dur + 's ' + (-(Math.random() * dur)) + 's linear infinite';
+      }
+      symWrap.appendChild(el);
+    }
+  }
+
+  let revealed = false;
+  function reveal(){
+    if (revealed) return;
+    revealed = true;
+    studio.classList.add('on');
+    scrollCue.classList.add('on');
+    symWrap.classList.add('on');
+  }
+
+  btn.addEventListener('click', () => {
+    if (spinning || !current) return;
+    const ids = REEL.order.filter(ready);
+    if (ids.length < 2) return;
+    const seq = shuffled(ids, current);
+    if (reduce) { draw(seq[seq.length - 1]); return; }
+    spin(seq);
+  });
+
+  // boot: the slowdown and final frame load first, then the rest (spin starts within 1.5 s)
+  seedSymbols();
+  const first = REEL.order;
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  Promise.all(first.slice(-REEL.slowFrames).map(load)).then(() => {
+    first.forEach(load);
+    return Promise.race([Promise.all(first.map(load)), wait(1500)]);
+  }).then(() => {
+    fit();
+    if (reduce) { draw(first[first.length - 1]); reveal(); }
+    else spin(first, reveal);
+  });
+})();
 
 // ─── BOOT ─────────────────────────────────────────────────
 loadProjects();
