@@ -49,7 +49,7 @@ body.on-detail nav.scrolled .nav-logo img{filter:invert(1);}
 body.on-detail nav.scrolled .nav-links a{color:var(--black);}
 body.on-detail nav.scrolled .ham span{background:var(--black);}
 .nav-links{display:flex;gap:32px;align-items:center;list-style:none;}
-.nav-links a{font-family:var(--display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--off-white);opacity:.55;transition:opacity .2s;cursor:none;}
+.nav-links a{font-family:var(--copy);font-style:italic;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--off-white);opacity:.55;transition:opacity .2s;cursor:none;}
 .nav-links a:hover,.nav-links a.active{opacity:1;}
 .ham{display:none;flex-direction:column;gap:5px;cursor:none;z-index:600;}
 .ham span{display:block;width:22px;height:1px;background:var(--off-white);transition:transform .3s,opacity .3s;}
@@ -83,7 +83,7 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .hero-reel{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:clamp(4px,1.2vh,12px);background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;cursor:none;-webkit-tap-highlight-color:transparent;}
 .hero-reel canvas{display:block;width:var(--reel-w);height:auto;aspect-ratio:1060/730;}
 .hero-reel:focus-visible{outline:1px solid var(--accent);outline-offset:10px;}
-.hero-studio{display:block;letter-spacing:.12em;padding-left:.12em;font-family:var(--copy);font-weight:400;font-size:max(15px,calc(var(--reel-w) * .044));line-height:1;color:var(--off-white);opacity:0;transform:translateY(6px);transition:opacity 1.2s ease,transform 1.2s ease;pointer-events:none;}
+.hero-studio{display:block;letter-spacing:.1em;padding-left:.1em;font-family:var(--copy);font-style:italic;font-weight:400;text-transform:uppercase;font-size:max(13px,calc(var(--reel-w) * .03));line-height:1;color:var(--off-white);opacity:0;transform:translateY(6px);transition:opacity 1.2s ease,transform 1.2s ease;pointer-events:none;}
 .hero-studio.on{opacity:1;transform:none;}
 @keyframes up{to{opacity:1;transform:none;}}
 
