@@ -7,7 +7,7 @@
 <meta name="description" content="Rites Studio partners with creatives & communities to transform public spaces. Our mindful, human-centric design fosters connection & shared experience for all.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
 <style>
 @font-face{font-family:'Exodus';src:url('fonts/Exodus.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -68,9 +68,9 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .home-hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:var(--nav-h) var(--pad) clamp(48px,7vh,100px);position:relative;overflow:hidden;}
 .home-hero::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");background-size:200px;z-index:1;}
 /* HERO LOGO REEL — slot-machine flip through the hand-drawn RITES sketches (images/logo-reel/).
-   Frames are 1060x730 transparent WebP. "studio", the floating symbols and the scroll cue
+   Frames are 1060x730 transparent WebP. "studio" and the floating symbols
    fade in once the first spin settles. */
-.home-hero{--reel-w:min(80vw,680px,calc((100svh - var(--nav-h) - 220px) * 1.452));}
+.home-hero{--reel-w:min(80vw,680px,calc((100svh - var(--nav-h) - 170px) * 1.452));}
 .hero-symbols{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 1.4s ease;}
 .hero-symbols.on{opacity:1;}
 .hero-sym{position:absolute;top:0;color:rgba(184,169,138,.45);user-select:none;line-height:1;}
@@ -83,10 +83,8 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .hero-reel{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:clamp(4px,1.2vh,12px);background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;cursor:none;-webkit-tap-highlight-color:transparent;}
 .hero-reel canvas{display:block;width:var(--reel-w);height:auto;aspect-ratio:1060/730;}
 .hero-reel:focus-visible{outline:1px solid var(--accent);outline-offset:10px;}
-.hero-studio{display:block;letter-spacing:.14em;padding-left:.14em;font-family:'Archivo','Helvetica Neue',Arial,sans-serif;font-weight:300;font-size:max(12px,calc(var(--reel-w) * .034));line-height:1;color:var(--off-white);opacity:0;transform:translateY(6px);transition:opacity 1.2s ease,transform 1.2s ease;pointer-events:none;}
+.hero-studio{display:block;letter-spacing:.12em;padding-left:.12em;font-family:var(--copy);font-weight:400;font-size:max(15px,calc(var(--reel-w) * .044));line-height:1;color:var(--off-white);opacity:0;transform:translateY(6px);transition:opacity 1.2s ease,transform 1.2s ease;pointer-events:none;}
 .hero-studio.on{opacity:1;transform:none;}
-.hero-scroll{position:relative;z-index:2;margin-top:clamp(32px,6vh,80px);font-family:var(--copy);font-style:italic;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:rgba(242,240,234,.55);opacity:0;transition:opacity .9s ease .4s;}
-.hero-scroll.on{opacity:1;}
 @keyframes up{to{opacity:1;transform:none;}}
 
 /* HOME WORK GRID (dynamic image tiles, no text overlay) */
@@ -100,7 +98,7 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
    width so tiles keep a reasonable minimum aspect ratio on wide screens
    instead of going short-and-wide.  */
 .home-grid-section{border-top:1px solid var(--rule);margin-top:0;}
-.hg-label{font-family:var(--copy);font-style:italic;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-grey);padding:28px var(--pad) 20px;}
+.hg-label{font-family:var(--display);font-weight:400;font-size:clamp(28px,3.4vw,48px);line-height:1;text-transform:uppercase;letter-spacing:.01em;color:var(--off-white);padding:32px var(--pad) 22px;}
 .home-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:clamp(220px,22vw,460px);gap:4px;padding:0 var(--pad) var(--pad);}
 .hg-tile{position:relative;overflow:hidden;cursor:none;background:#111;display:block;width:100%;height:100%;border:0;margin:0;padding:0;font:inherit;text-align:left;}
 .hg-tile img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(20%) brightness(.82);transition:transform .8s cubic-bezier(.16,1,.3,1),filter .5s;}
@@ -275,10 +273,9 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
       <canvas id="hero-reel-cv" width="1060" height="730" aria-hidden="true"></canvas>
       <span class="hero-studio" id="hero-studio" aria-hidden="true">studio</span>
     </button>
-    <span class="hero-scroll" id="hero-scroll">Scroll — selected work</span>
   </section>
   <section class="home-grid-section">
-    <p class="hg-label">— selected work</p>
+    <h2 class="hg-label">Work</h2>
     <div class="home-grid" id="home-grid"></div>
   </section>
   <section class="home-cta">
@@ -669,7 +666,6 @@ const REEL = {
   const cv = document.getElementById('hero-reel-cv');
   const ctx = cv.getContext('2d');
   const studio = document.getElementById('hero-studio');
-  const scrollCue = document.getElementById('hero-scroll');
   const symWrap = document.getElementById('hero-symbols');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const pageOf = id => parseInt(id.slice(1), 10);
@@ -781,7 +777,6 @@ const REEL = {
     if (revealed) return;
     revealed = true;
     studio.classList.add('on');
-    scrollCue.classList.add('on');
     symWrap.classList.add('on');
   }
 
