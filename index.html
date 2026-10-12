@@ -83,7 +83,7 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .hero-reel{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:clamp(4px,1.2vh,12px);background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;cursor:none;-webkit-tap-highlight-color:transparent;}
 .hero-reel canvas{display:block;width:var(--reel-w);height:auto;aspect-ratio:1060/730;}
 .hero-reel:focus-visible{outline:1px solid var(--accent);outline-offset:10px;}
-.hero-studio{display:flex;justify-content:space-between;width:calc(var(--reel-w) * .44);font-family:'Archivo','Helvetica Neue',Arial,sans-serif;font-weight:300;font-size:max(12px,calc(var(--reel-w) * .034));line-height:1;color:var(--off-white);opacity:0;transform:translateY(6px);transition:opacity 1.2s ease,transform 1.2s ease;pointer-events:none;}
+.hero-studio{display:block;letter-spacing:.14em;padding-left:.14em;font-family:'Archivo','Helvetica Neue',Arial,sans-serif;font-weight:300;font-size:max(12px,calc(var(--reel-w) * .034));line-height:1;color:var(--off-white);opacity:0;transform:translateY(6px);transition:opacity 1.2s ease,transform 1.2s ease;pointer-events:none;}
 .hero-studio.on{opacity:1;transform:none;}
 .hero-scroll{position:relative;z-index:2;margin-top:clamp(32px,6vh,80px);font-family:var(--copy);font-style:italic;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:rgba(242,240,234,.55);opacity:0;transition:opacity .9s ease .4s;}
 .hero-scroll.on{opacity:1;}
@@ -273,7 +273,7 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
     <div class="hero-symbols" id="hero-symbols" aria-hidden="true"></div>
     <button class="hero-reel" id="hero-reel" type="button" aria-label="Rites Studio logo. Click to spin to another sketch.">
       <canvas id="hero-reel-cv" width="1060" height="730" aria-hidden="true"></canvas>
-      <span class="hero-studio" id="hero-studio" aria-hidden="true"><span>s</span><span>t</span><span>u</span><span>d</span><span>i</span><span>o</span></span>
+      <span class="hero-studio" id="hero-studio" aria-hidden="true">studio</span>
     </button>
     <span class="hero-scroll" id="hero-scroll">Scroll — selected work</span>
   </section>
@@ -657,9 +657,10 @@ const REEL = {
     'p21-4', 'p50-0', 'p20-4', 'p48-3', 'p04-0', 'p43-0', 'p47-1', 'p20-8', 'p47-4', 'p46-3', 'p23-2',
     'p50-2', 'p50-1', 'p23-1', 'p21-5', 'p34-0', 'p48-0', 'p46-1', 'p16-0', 'p27-0', 'p22-1', 'p51-1',
   ],
-  spinMs: 30,       // steady spin, ms per frame
+  spinMs: 70,       // steady spin, ms per frame
   slowFrames: 12,   // how many frames the slowdown is spread over
   stopMs: 500,      // the slowest frame, just before the logo settles
+  clickFrames: 30,  // frames per spin when the logo is clicked (page load plays the full order)
   minGap: 4,        // shuffled neighbours stay at least this many sketchbook pages apart
 };
 (function heroReel(){
@@ -788,7 +789,7 @@ const REEL = {
     if (spinning || !current) return;
     const ids = REEL.order.filter(ready);
     if (ids.length < 2) return;
-    const seq = shuffled(ids, current);
+    const seq = shuffled(ids, current).slice(-REEL.clickFrames);
     if (reduce) { draw(seq[seq.length - 1]); return; }
     spin(seq);
   });
