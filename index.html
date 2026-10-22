@@ -33,6 +33,7 @@ a{text-decoration:none;color:inherit;}
 @media(pointer:coarse){#cur{display:none;}body{cursor:auto;}}
 
 /* VEIL */
+html.deep-link .page.on{visibility:hidden;}
 #veil{position:fixed;inset:0;background:var(--black);z-index:800;transform-origin:bottom;transform:scaleY(0);pointer-events:none;}
 #veil.in{animation:veil-in .45s cubic-bezier(.77,0,.18,1) forwards;}
 #veil.out{animation:veil-out .4s cubic-bezier(.77,0,.18,1) .05s forwards;}
@@ -248,20 +249,20 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" data-page="home" href="#"><img src="images/logo/rites-logo.webp" alt="Rites Studio" width="135" height="144"></a>
+  <a class="nav-logo" data-page="home" href="./"><img src="images/logo/rites-logo.webp" alt="Rites Studio" width="135" height="144"></a>
   <ul class="nav-links">
-    <li><a data-page="projects" href="#">Projects</a></li>
-    <li><a data-page="about"    href="#">About</a></li>
-    <li><a data-page="contact"  href="#">Contact</a></li>
+    <li><a data-page="projects" href="#work">Projects</a></li>
+    <li><a data-page="about"    href="#about">About</a></li>
+    <li><a data-page="contact"  href="#contact">Contact</a></li>
     <li><a href="https://www.instagram.com/rites.studio/" target="_blank" rel="noopener">↗ Instagram</a></li>
   </ul>
   <div class="ham" id="ham"><span></span><span></span><span></span></div>
 </nav>
 
 <div class="mob-menu" id="mob">
-  <a data-page="projects" href="#">Projects</a>
-  <a data-page="about"    href="#">About</a>
-  <a data-page="contact"  href="#">Contact</a>
+  <a data-page="projects" href="#work">Projects</a>
+  <a data-page="about"    href="#about">About</a>
+  <a data-page="contact"  href="#contact">Contact</a>
   <a href="https://www.instagram.com/rites.studio/" target="_blank" rel="noopener">Instagram ↗</a>
 </div>
 
@@ -281,7 +282,7 @@ footer{border-top:1px solid var(--rule);padding:28px var(--pad);display:flex;jus
   <section class="home-cta">
     <p class="home-cta-label">— work with us</p>
     <h2 class="home-cta-headline">Got a space you want<br>to transform?</h2>
-    <a class="home-cta-btn" data-page="contact" href="#">Start a conversation →</a>
+    <a class="home-cta-btn" data-page="contact" href="#contact">Start a conversation →</a>
   </section>
   <footer>
     <span class="ft-copy">© 2026 Rites Studio</span>
@@ -436,7 +437,7 @@ function renderHome() {
   const grid = document.getElementById('home-grid');
   const spans = mosaicClasses(PROJECTS.length);
   grid.innerHTML = PROJECTS.map((p, i) => `
-    <a class="hg-tile rev ${spans[i]}" data-page="detail" data-proj="${p.key}" href="#">
+    <a class="hg-tile rev ${spans[i]}" data-page="detail" data-proj="${p.key}" href="#${slugOf(p)}">
       <img src="${p.hero}" alt="${p.title}" loading="lazy">
     </a>
   `).join('');
@@ -478,14 +479,14 @@ function renderDetail(key) {
     </button>
   `).join('');
 
-  const prevBtn = prevP ? `<a data-page="detail" data-proj="${prevP.key}" href="#">← ${prevP.title}</a>` : `<span></span>`;
-  const nextBtn = nextP ? `<a data-page="detail" data-proj="${nextP.key}" href="#">${nextP.title} →</a>` : `<span></span>`;
+  const prevBtn = prevP ? `<a data-page="detail" data-proj="${prevP.key}" href="#${slugOf(prevP)}">← ${prevP.title}</a>` : `<span></span>`;
+  const nextBtn = nextP ? `<a data-page="detail" data-proj="${nextP.key}" href="#${slugOf(nextP)}">${nextP.title} →</a>` : `<span></span>`;
 
   document.getElementById('p-detail').innerHTML = `
     <div class="detail-hero">
       <img src="${p.hero}" alt="${p.title}">
       <div class="detail-hero-body">
-        <a class="back" data-page="projects" href="#">← all work</a>
+        <a class="back" data-page="projects" href="#work">← all work</a>
         <div class="detail-h1-wrap">
           <div class="detail-h1-inner"><span class="detail-title-italic">${p.title}</span></div>
         </div>
@@ -512,12 +513,68 @@ function renderDetail(key) {
   bindCursorGrow(document.getElementById('p-detail'));
 }
 
+// ─── ADDRESSES ───────────────────────────────────────────
+// Each view gets its own #address (rites.studio/#about, /#holy-crap), so Back,
+// Forward, refresh and shared links all land on the right view. Hash addresses
+// need no server rewrites on GitHub Pages. Project addresses come from the
+// title; the project key also works, so links survive a title change.
+const PAGE_HASH = { home:'', projects:'work', about:'about', contact:'contact' };
+const PAGE_LABEL = { projects:'Work', about:'About', contact:'Contact' };
+const SITE_TITLE = document.title;
+const slugOf = p => p.title.toLowerCase().replace(/&/g, ' and ').replace(/[()'’]/g, '')
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+function hashFor(pageId, proj) {
+  if (pageId === 'detail') {
+    const p = PROJECTS.find(x => x.key === proj);
+    return p ? slugOf(p) : proj;
+  }
+  return PAGE_HASH[pageId] || '';
+}
+function urlFor(pageId, proj) {
+  const h = hashFor(pageId, proj);
+  return h ? '#' + h : location.pathname + location.search;
+}
+function routeFromHash() {
+  let h = location.hash.replace(/^#\/?/, '');
+  try { h = decodeURIComponent(h); } catch (e) {}
+  h = h.toLowerCase();
+  if (!h) return ['home'];
+  if (h === 'projects') return ['projects'];
+  const page = Object.keys(PAGE_HASH).find(k => PAGE_HASH[k] && PAGE_HASH[k] === h);
+  if (page) return [page];
+  const p = PROJECTS.find(x => slugOf(x) === h || x.key.toLowerCase() === h);
+  return p ? ['detail', p.key] : ['home'];
+}
+function setTitle(pageId, proj) {
+  const p = pageId === 'detail' ? PROJECTS.find(x => x.key === proj) : null;
+  const label = p ? p.title : PAGE_LABEL[pageId];
+  document.title = label ? `${label} | ${SITE_TITLE}` : SITE_TITLE;
+}
+
 // ─── NAVIGATION ──────────────────────────────────────────
-function goTo(pageId, proj) {
+// opts.history: 'push' (a click, the default), 'replace', or 'none' (Back/Forward)
+// opts.scroll:  where to land on the new view (Back/Forward restore it)
+// opts.instant: swap without the veil (first load of a deep link)
+let target = cur, navSeq = 0;
+function goTo(pageId, proj, opts = {}) {
   const key = proj ? `detail-${proj}` : pageId;
-  if (key === cur) return;
-  veil.className = 'in';
+  if (key === target) return;
+  target = key;
+  const mode = opts.history || 'push';
+  if (mode === 'push') {
+    try {
+      history.replaceState({ ...(history.state || {}), scroll: window.scrollY }, '');
+      history.pushState({ pageId, proj, scroll: 0 }, '', urlFor(pageId, proj));
+    } catch (e) {}
+  } else if (mode === 'replace') {
+    try { history.replaceState({ pageId, proj, scroll: 0 }, '', urlFor(pageId, proj)); } catch (e) {}
+  }
+  if (lb.classList.contains('open')) closeLightbox();
+  const seq = ++navSeq;
+  if (!opts.instant) veil.className = 'in';
   setTimeout(() => {
+    if (seq !== navSeq) return;   // a newer navigation took over
     document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
     if (pageId === 'detail' && proj) {
       renderDetail(proj);
@@ -533,12 +590,25 @@ function goTo(pageId, proj) {
     });
     document.body.classList.toggle('on-detail', pageId === 'detail');
     document.body.classList.toggle('on-home', pageId === 'home');
-    window.scrollTo(0,0);
+    setTitle(pageId, proj);
+    document.documentElement.classList.remove('deep-link');
+    window.scrollTo(0, opts.scroll || 0);
     updateNavState();
+    if (opts.instant) { initObserver(); return; }
     veil.className = 'out';
-    setTimeout(() => { veil.className = ''; initObserver(); }, 450);
-  }, 420);
+    setTimeout(() => { if (seq === navSeq) veil.className = ''; initObserver(); }, 450);
+  }, opts.instant ? 0 : 420);
 }
+
+// Back / Forward, and addresses typed or edited by hand
+function onAddressChange(e) {
+  const [pageId, proj] = routeFromHash();
+  if (mobOpen) toggleMob();
+  const scroll = e && e.state && typeof e.state.scroll === 'number' ? e.state.scroll : 0;
+  goTo(pageId, proj, { history: 'none', scroll });
+}
+window.addEventListener('popstate', onAddressChange);
+window.addEventListener('hashchange', () => onAddressChange(null));
 
 // ─── NAV SCROLL STATE (logo reveal + light/dark flip past the fold) ──
 function updateNavState(){
@@ -553,6 +623,7 @@ window.addEventListener('scroll', updateNavState, {passive:true});
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-page]');
   if (!el) return;
+  if (el.tagName === 'A' && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return;   // new tab / window
   e.preventDefault();
   if (mobOpen) toggleMob();
   goTo(el.dataset.page, el.dataset.proj);
@@ -818,7 +889,14 @@ const REEL = {
 })();
 
 // ─── BOOT ─────────────────────────────────────────────────
-loadProjects();
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+if (location.hash.replace(/^#\/?/, '')) document.documentElement.classList.add('deep-link');
+loadProjects().then(() => {
+  const [pageId, proj] = routeFromHash();
+  try { history.replaceState({ pageId, proj, scroll: 0 }, '', urlFor(pageId, proj)); } catch (e) {}
+  if (pageId === 'home') { document.documentElement.classList.remove('deep-link'); setTitle('home'); return; }
+  goTo(pageId, proj, { history: 'none', instant: true });
+});
 </script>
 </body>
 </html>
