@@ -69,7 +69,7 @@ body.on-detail nav.scrolled .ham span{background:var(--black);}
 .home-hero::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");background-size:200px;z-index:1;}
 /* HERO LOGO REEL — slot-machine flip through the hand-drawn RITES sketches (images/logo-reel/).
    Frames are 1060x730 transparent WebP. "studio" and the floating symbols
-   fade in once the first spin settles. */
+   fade in during the first spin's slowdown. */
 .home-hero{--reel-w:min(80vw,680px,calc((100svh - var(--nav-h) - 170px) * 1.452));}
 .hero-symbols{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 1.4s ease;}
 .hero-symbols.on{opacity:1;}
@@ -640,8 +640,9 @@ function initObserver(){
 
 // ─── HERO LOGO REEL ──────────────────────────────────────
 // Slot-machine flip through the hand-drawn RITES sketches.
-// Page load always plays REEL.order and settles on its last frame.
-// Each click on the logo spins a fresh shuffle that lands on a different sketch.
+// Page load spins a random set of REEL.introFrames sketches and always settles on
+// the last entry in REEL.order (the header logo). Each click on the logo spins a
+// fresh shuffle that lands on a different sketch.
 const REEL = {
   dir: 'images/logo-reel/',
   order: [
@@ -654,10 +655,11 @@ const REEL = {
     'p21-4', 'p50-0', 'p20-4', 'p48-3', 'p04-0', 'p43-0', 'p47-1', 'p20-8', 'p47-4', 'p46-3', 'p23-2',
     'p50-2', 'p50-1', 'p23-1', 'p21-5', 'p34-0', 'p48-0', 'p46-1', 'p16-0', 'p27-0', 'p22-1', 'p51-1',
   ],
+  introFrames: 36,  // frames in the page-load spin (about 3.1 s)
   spinMs: 70,       // steady spin, ms per frame
-  slowFrames: 12,   // how many frames the slowdown is spread over
-  stopMs: 500,      // the slowest frame, just before the logo settles
-  clickFrames: 30,  // frames per spin when the logo is clicked (page load plays the full order)
+  slowFrames: 8,    // how many frames the slowdown is spread over
+  stopMs: 400,      // the slowest frame, just before the logo settles
+  clickFrames: 24,  // frames per spin when the logo is clicked (about 2.3 s)
   minGap: 4,        // shuffled neighbours stay at least this many sketchbook pages apart
 };
 (function heroReel(){
@@ -714,18 +716,21 @@ const REEL = {
   }
 
   let spinning = false;
-  function spin(seq, done){
+  // onSlow fires on the first frame of the slowdown
+  function spin(seq, done, onSlow){
     spinning = true;
     btn.setAttribute('aria-busy', 'true');
     const d = delays(seq.length), at = [0];
     for (let i = 1; i < seq.length; i++) at.push(at[i - 1] + d[i - 1]);
-    let t0 = null, shown = -1;
+    const slowAt = seq.length - Math.min(REEL.slowFrames, seq.length);
+    let t0 = null, shown = -1, slowFired = false;
     function tick(now){
       if (t0 === null) t0 = now;
       const t = now - t0;
       let i = shown;
       while (i + 1 < seq.length && at[i + 1] <= t) i++;
       if (i !== shown) { draw(seq[i]); shown = i; }
+      if (!slowFired && shown >= slowAt) { slowFired = true; if (onSlow) onSlow(); }
       if (shown < seq.length - 1) requestAnimationFrame(tick);
       else { spinning = false; btn.removeAttribute('aria-busy'); if (done) done(); }
     }
@@ -789,17 +794,26 @@ const REEL = {
     spin(seq);
   });
 
-  // boot: the slowdown and final frame load first, then the rest (spin starts within 1.5 s)
+  // page-load sequence: random sketches, neighbours kept apart, ending on the header logo
+  function introSeq(){
+    const end = REEL.order[REEL.order.length - 1];
+    const pool = REEL.order.filter(id => id !== end);
+    const seq = shuffled(pool, end).slice(0, REEL.introFrames - 1).reverse();
+    seq.push(end);
+    return seq;
+  }
+
+  // boot: load only the intro frames (spin starts within 1.5 s), then the rest for clicks.
+  // "studio" and the symbols fade in during the slowdown so they land with the logo.
   seedSymbols();
-  const first = REEL.order;
   const wait = ms => new Promise(r => setTimeout(r, ms));
-  Promise.all(first.slice(-REEL.slowFrames).map(load)).then(() => {
-    first.forEach(load);
-    return Promise.race([Promise.all(first.map(load)), wait(1500)]);
-  }).then(() => {
+  const end = REEL.order[REEL.order.length - 1];
+  const first = reduce ? [end] : introSeq();
+  Promise.race([Promise.all(first.map(load)), wait(1500)]).then(() => {
     fit();
-    if (reduce) { draw(first[first.length - 1]); reveal(); }
-    else spin(first, reveal);
+    REEL.order.forEach(load);
+    if (reduce) { load(end).then(() => { draw(end); reveal(); }); }
+    else spin(first, reveal, reveal);
   });
 })();
 
