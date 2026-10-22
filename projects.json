@@ -81,16 +81,16 @@
     "title": "MIRROR \u2013 MIRROR",
     "tag": "transit installation \u00b7 public art",
     "cardTag": "transit installation",
-    "hero": "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7c7b42b2-c92c-48a2-9c16-3d2c869f4620/WIDE+ANGLE.png",
+    "hero": "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/connection/wide-angle.jpg",
     "h2": "a station to connect communities and individuals",
     "body1": "The time we spend waiting for things in public is, more often than not, wasted time. We might treat these rare moments of boredom with apathy, or worse\u2014disdain. We wait with other humans surrounding us, but we turn inwards, to our phones, our thoughts, our worries.\n\nIf the places we spent time waiting around provided more opportunity to look out of ourselves, maybe we could reconnect with our community or our fellow humans.",
     "body2": "This bus rapid transit station is located in a prominent commercial corridor which connects unique neighborhoods, old and new. The residents are as unique as the neighborhoods they live in. This station gives the residents, who will soon rely on this transit line, a chance to connect with each other using a simple tool\u2014the mirror.\n\nThe quote embedded in the polished steel panel comes from Italo Calvino's Invisible Cities. Its purpose is to draw the attention of the riders to the surface overhead. In reading the quote, provided in English and Spanish, the riders might catch a glance of their fellow rider as they too read the quote above.\n\nSoft lighting and penetrations in the structure provide safety and visibility of users. The composite concrete surfaces are easily cleanable and the reinforced traffic barrier protects those on the platform from oncoming traffic.",
     "images": [
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/b63ec225-674c-47e0-873d-09831edb65de/Artboard+1.jpg",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/729145b6-28f2-472f-aebe-852a5e2c552f/APPROACH.png",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/f890c019-f23d-44e8-9e10-9e8dc373cafb/Street+View+-+DAY.png",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/0e83651d-7160-4d49-b2da-a5fc37f225e7/Street+View+-+NIGHT.png",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/cee81d61-ee85-4441-9f61-c263831b3bda/From+Sidewalk.png"
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/connection/artboard-1.jpg",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/connection/approach.jpg",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/connection/street-view-day.jpg",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/connection/street-view-night.jpg",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/connection/from-sidewalk.jpg"
     ],
     "featured": false
   },
@@ -100,15 +100,15 @@
     "title": "THE HOT SEAT",
     "tag": "pop-up structure \u00b7 temporary pavilion",
     "cardTag": "pop-up pavilion",
-    "hero": "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/35f1c92a-a74c-4896-95a0-7d25b7aef6c0/Front+Render+%282018_11_28+04_13_52+UTC%29.jpg",
+    "hero": "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/comfort/front-render.jpg",
     "h2": "a pop-up community center",
     "body1": "Every year the Pittsburgh Polar Bear Club jumps into the frigid waters of the Monongahela River. It's been described as quick and exhilarating, something \"The Hot Seat\" was inspired by. Sponsored by Epic Metals, this design marries the precise, thin, and reflective nature of metal decking with the stark, raw quality of steel members to create a structure that celebrates the vibrancy of metal.",
     "body2": "The interior changing rooms contrast the cold exterior with the warmth of cork lined floors, canvas partitions, and seats heated by coals which sit in a bed made from metal decking. The entire structure is designed for extremely fast assembly and disassembly, using self-locking hinge joints.\n\nWithin the structure you can experience a blend of elements that are not only useful but comfortable as well. The exterior caters to swimmer and spectator alike, providing seating which is heated by the thermal bridge from the interior and also faces south, towards the sun. Finally, you can enjoy a hot beverage at the built-in bar and continue on your way.",
     "images": [
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/83518f17-ca80-4425-8931-243a8654330b/elevations+and+plan.jpg",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7f1ea3ac-8be7-40ea-8e92-1da7df78d8fd/construction.jpg",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/4607b3d3-5dd9-454e-9169-49faf0b056a9/diagrams.jpg",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/35f1c92a-a74c-4896-95a0-7d25b7aef6c0/Front+Render+%282018_11_28+04_13_52+UTC%29.jpg"
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/comfort/elevations-and-plan.jpg",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/comfort/construction.jpg",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/comfort/diagrams.jpg",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/comfort/front-render.jpg"
     ],
     "featured": false
   },
@@ -118,17 +118,16 @@
     "title": "PLASTIC PAVILION",
     "tag": "community experiment \u00b7 sustainability",
     "cardTag": "community pavilion",
-    "hero": "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7382fe63-bce0-4279-85e2-64f9644a2b00/IMG_3425_bright.jpg",
+    "hero": "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/unity/img-3425-bright.jpg",
     "h2": "Can a community be brought together by their trash?",
     "body1": "Every day, trash bins are filled with plastic cups embossed with recycling symbols. But if you follow the journey of that cup, does it actually get recycled? Most often, the answer is no. It lives its many hundreds of years of life sitting in a landfill or polluting our water.\n\nSo, we were curious\u2014could we take hundreds of discarded plastic cups and turn them into a shelter? A core goal of this experiment was to create a replicable process with somewhat of a recipe book for anyone to experiment with, as well.",
     "body2": "Despite the utilitarian design, the repurposed material that came out of the process also proved to have an inherent beauty. We wanted to show the public that regardless of their local authorities' indifference toward recycling, they have the power to change their impact from negative to positive.\n\nWe wanted to take off the shelf tools\u2014a paper shredder, a heat press, silicone baking sheets, zipties, and a few hundred plastic cups\u2014and make something with longevity from all these disposable products. If we could create this pavilion over a couple months, imagine what an entire community could do with their collective trash and their imagination.\n\nIn collaboration with Cy Kim.",
     "images": [
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/8cce9282-d335-4a87-8b9a-09f4ccccfc23/IMG_3424+%282018_11_28+04_13_52+UTC%29.jpg",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/4e942a5a-9239-4ad0-b72f-ac073ec5e72f/IMG_3413+%281%29+%282018_11_28+04_13_52+UTC%29.JPG",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7382fe63-bce0-4279-85e2-64f9644a2b00/IMG_3425_bright.jpg",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/52334a37-d93a-4a0c-af8e-13cb80089662/IMG_3422+%282018_11_28+04_13_52+UTC%29.JPG",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/7549fb6d-f40b-461a-b4e5-0933950e9a2d/IMG_3426+%282018_11_28+04_13_52+UTC%29.JPG",
-      "https://images.squarespace-cdn.com/content/v1/5eb4c8c0133f922cb9feaa4b/991761e4-f6b8-42a4-306d06dd058a/07.jpg"
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/unity/img-3424.jpg",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/unity/img-3413.jpg",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/unity/img-3425-bright.jpg",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/unity/img-3422.jpg",
+      "https://raw.githubusercontent.com/resposito1029/rites-studio/main/images/unity/img-3426.jpg"
     ],
     "featured": false
   },
